@@ -1,18 +1,207 @@
-<svg width="500" height="500">
+<!DOCTYPE html>
+<html>
+<body style="margin:0; padding:20px; background:#ffffff;">
 
-  <!-- triangle -->
+<style>
+  .hit-area {
+    cursor: grab;
+    pointer-events: all;
+  }
+
+  .hit-area:active {
+    cursor: grabbing;
+  }
+
+  .visible-point {
+    pointer-events: none;
+  }
+
+  #profile-shape {
+    pointer-events: none;
+  }
+
+  #graph {
+    touch-action: none;
+    user-select: none;
+  }
+</style>
+
+<h1>Interactive Fear Matrix</h1>
+
+<svg id="graph" width="1000" height="1000" style="background:white;">
+
   <polygon
-    points="250,50 50,450 450,450"
+    points="450,90 138,630 762,630"
     fill="lightyellow"
     stroke="black"
+    stroke-width="2"
   />
 
-  <!-- draggable point -->
-  <circle
-    cx="250"
-    cy="200"
-    r="8"
-    fill="red"
+  <text x="450" y="70" text-anchor="middle" font-size="30">exposure</text>
+  <text x="90" y="675" font-size="30">risk</text>
+  <text x="700" y="675" font-size="30">consequence</text>
+
+  <line x1="450" y1="450" x2="450" y2="90" stroke="black" stroke-width="2" />
+  <line x1="450" y1="450" x2="138" y2="630" stroke="black" stroke-width="2" />
+  <line x1="450" y1="450" x2="762" y2="630" stroke="black" stroke-width="2" />
+
+  <path
+    id="profile-shape"
+    fill="rgba(249, 250, 242, 0.75)"
+    stroke="black"
+    stroke-width="1.5"
   />
+
+  <!-- Large invisible hit areas -->
+  <circle class="hit-area" data-axis="top" cx="450" cy="390" r="55" fill="rgba(0,0,0,0.001)" />
+  <circle class="hit-area" data-axis="left" cx="398" cy="480" r="55" fill="rgba(0,0,0,0.001)" />
+  <circle class="hit-area" data-axis="right" cx="502" cy="480" r="55" fill="rgba(0,0,0,0.001)" />
+
+  <!-- Small visible dots -->
+  <circle class="visible-point" data-axis="top" cx="450" cy="390" r="6" fill="red" />
+  <circle class="visible-point" data-axis="left" cx="398" cy="480" r="6" fill="blue" />
+  <circle class="visible-point" data-axis="right" cx="502" cy="480" r="6" fill="green" />
 
 </svg>
+
+<script>
+  const svg = document.getElementById("graph");
+  const points = document.querySelectorAll(".hit-area");
+  const shape = document.getElementById("profile-shape");
+
+  const center = { x: 450, y: 450 };
+
+  const axes = {
+    top:   { x: 450, y: 90 },
+    left:  { x: 138, y: 630 },
+    right: { x: 762, y: 630 }
+  };
+
+  let isDragging = false;
+  let dragAxis = null;
+  let activePointerId = null;
+
+  points.forEach(point => {
+    const axisName = point.dataset.axis;
+    const saved = localStorage.getItem(axisName);
+
+    if (saved) {
+      const position = JSON.parse(saved);
+      movePoint(axisName, position.x, position.y);
+    }
+
+    point.addEventListener("pointerdown", event => {
+      isDragging = true;
+      dragAxis = axisName;
+      activePointerId = event.pointerId;
+
+      svg.setPointerCapture(event.pointerId);
+
+      document.body.style.cursor = "grabbing";
+      event.preventDefault();
+    });
+  });
+
+  svg.addEventListener("pointermove", event => {
+    if (!isDragging || event.pointerId !== activePointerId) return;
+
+    const rect = svg.getBoundingClientRect();
+
+    const mouse = {
+      x: event.clientX - rect.left,
+      y: event.clientY - rect.top
+    };
+
+    const projected = projectPointOntoAxis(
+      mouse,
+      center,
+      axes[dragAxis]
+    );
+
+    movePoint(dragAxis, projected.x, projected.y);
+    localStorage.setItem(dragAxis, JSON.stringify(projected));
+    updateShape();
+  });
+
+  svg.addEventListener("pointerup", stopDragging);
+  svg.addEventListener("pointercancel", stopDragging);
+  svg.addEventListener("lostpointercapture", stopDragging);
+
+  function stopDragging() {
+    if (activePointerId !== null && svg.hasPointerCapture(activePointerId)) {
+      svg.releasePointerCapture(activePointerId);
+    }
+
+    isDragging = false;
+    dragAxis = null;
+    activePointerId = null;
+    document.body.style.cursor = "default";
+  }
+
+  updateShape();
+
+  function movePoint(axisName, x, y) {
+    const hitArea = document.querySelector(
+      `.hit-area[data-axis="${axisName}"]`
+    );
+
+    const visiblePoint = document.querySelector(
+      `.visible-point[data-axis="${axisName}"]`
+    );
+
+    hitArea.setAttribute("cx", x);
+    hitArea.setAttribute("cy", y);
+
+    visiblePoint.setAttribute("cx", x);
+    visiblePoint.setAttribute("cy", y);
+  }
+
+  function updateShape() {
+    const top = getPoint("top");
+    const left = getPoint("left");
+    const right = getPoint("right");
+
+    const d = `
+      M ${top.x} ${top.y}
+      Q ${center.x} ${center.y} ${left.x} ${left.y}
+      Q ${center.x} ${center.y} ${right.x} ${right.y}
+      Q ${center.x} ${center.y} ${top.x} ${top.y}
+      Z
+    `;
+
+    shape.setAttribute("d", d);
+  }
+
+  function getPoint(axisName) {
+    const point = document.querySelector(
+      `.visible-point[data-axis="${axisName}"]`
+    );
+
+    return {
+      x: Number(point.getAttribute("cx")),
+      y: Number(point.getAttribute("cy"))
+    };
+  }
+
+  function projectPointOntoAxis(mouse, start, end) {
+    const dx = end.x - start.x;
+    const dy = end.y - start.y;
+
+    const lengthSquared = dx * dx + dy * dy;
+
+    let t =
+      ((mouse.x - start.x) * dx +
+       (mouse.y - start.y) * dy) /
+      lengthSquared;
+
+    t = Math.max(0, Math.min(1, t));
+
+    return {
+      x: start.x + t * dx,
+      y: start.y + t * dy
+    };
+  }
+</script>
+
+</body>
+</html>
