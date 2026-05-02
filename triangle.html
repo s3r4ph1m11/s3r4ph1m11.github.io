@@ -24,11 +24,20 @@
     touch-action: none;
     user-select: none;
   }
+  h1 {font-family: sans-serif;}
+  h2 {
+  margin-top: 0px; margin-bottom: 0px;
+  text-decoration: underline;
+}
+h3 {padding-bottom: 0px; margin-bottom: 5px;}
+ul {padding-top: 0px; margin-top: 0px;}
+li {padding-top: 0px;margin-top: 0px; font-size: large;}
+
 </style>
 
 <h1>Interactive Fear Matrix</h1>
 
-<svg id="graph" width="1000" height="1000" style="background:white;">
+<svg id="graph" width="1000" height="700" style="background:white;">
 
   <polygon
     points="450,90 138,630 762,630"
@@ -37,9 +46,9 @@
     stroke-width="2"
   />
 
-  <text x="450" y="70" text-anchor="middle" font-size="30">exposure</text>
-  <text x="90" y="675" font-size="30">risk</text>
-  <text x="700" y="675" font-size="30">consequence</text>
+  <text x="450" y="70" text-anchor="middle" font-size="28">Exposure</text>
+  <text x="90" y="675" font-size="28">Risk</text>
+  <text x="700" y="675" font-size="28">Consequence</text>
 
   <line x1="450" y1="450" x2="450" y2="90" stroke="black" stroke-width="2" />
   <line x1="450" y1="450" x2="138" y2="630" stroke="black" stroke-width="2" />
@@ -64,10 +73,21 @@
 
 </svg>
 
+<div id="profile-output"
+     style="
+       margin-top:20px;
+       font-size:32px;
+       font-family:sans-serif;
+       font-weight:bold;
+     ">
+  Profile:
+</div>
+
 <script>
   const svg = document.getElementById("graph");
   const points = document.querySelectorAll(".hit-area");
   const shape = document.getElementById("profile-shape");
+  const output = document.getElementById("profile-output");
 
   const center = { x: 450, y: 450 };
 
@@ -170,6 +190,52 @@
     `;
 
     shape.setAttribute("d", d);
+
+    const exposure = getAxisLevel(top, axes.top);
+    const risk = getAxisLevel(left, axes.left);
+    const consequence = getAxisLevel(right, axes.right);
+
+    const profileKey = `${exposure}-${risk}-${consequence}`;
+
+    const profiles = {
+      "low-low-low": "Low Intensity",
+      "low-low-medium": "Controlled Practice",
+      "low-low-high": "Hidden Consequence",
+
+      "low-medium-low": "Casual Lead",
+      "low-medium-medium": "Balanced Climbing",
+      "low-medium-high": "Serious Fall Potential",
+
+      "low-high-low": "Technical Risk",
+      "low-high-medium": "Highball",
+      "low-high-high": "Danger Zone",
+
+      "medium-low-low": "Comfortable Exposure",
+      "medium-low-medium": "Exposed But Safe",
+      "medium-low-high": "Free Solo",
+
+      "medium-medium-low": "Sport Climbing",
+      "medium-medium-medium": "All-Around Climbing",
+      "medium-medium-high": "Committed Climbing",
+
+      "medium-high-low": "Risky Movement",
+      "medium-high-medium": "Bold Climbing",
+      "medium-high-high": "Extreme Commitment",
+
+      "high-low-low": "Airy But Safe",
+      "high-low-medium": "Exposed Movement",
+      "high-low-high": "No-Fall Zone",
+
+      "high-medium-low": "Lead Climbing",
+      "high-medium-medium": "Exposed Lead",
+      "high-medium-high": "Big Wall",
+
+      "high-high-low": "Unstable Movement",
+      "high-high-medium": "Serious Risk",
+      "high-high-high": "Maximum Fear"
+    };
+
+    output.textContent = `Profile: ${profiles[profileKey]}`;
   }
 
   function getPoint(axisName) {
@@ -181,6 +247,30 @@
       x: Number(point.getAttribute("cx")),
       y: Number(point.getAttribute("cy"))
     };
+  }
+
+  function getAxisLevel(point, axisEnd) {
+
+    const dxTotal = axisEnd.x - center.x;
+    const dyTotal = axisEnd.y - center.y;
+
+    const dxPoint = point.x - center.x;
+    const dyPoint = point.y - center.y;
+
+    const totalDistance = Math.sqrt(
+      dxTotal * dxTotal + dyTotal * dyTotal
+    );
+
+    const pointDistance = Math.sqrt(
+      dxPoint * dxPoint + dyPoint * dyPoint
+    );
+
+    const ratio = pointDistance / totalDistance;
+
+    if (ratio < 0.33) return "low";
+    if (ratio < 0.66) return "medium";
+
+    return "high";
   }
 
   function projectPointOntoAxis(mouse, start, end) {
@@ -202,23 +292,39 @@
     };
   }
 </script>
-<h2>Legend</h2>
-<h3>Exposure</h3>
-<ul>
-  <li>Sometimes a feeling, sometimes an objective reality</li>
-  <li>Almost anything with lots of air beneath it will feel exposed</li>
-  <li>Certain positions on a wall like on a prow or very insecure slab have an exposed feeling</li>
-  <li>Ultimately, each climber decides what feels exposed to them</li>
-</ul>
-<h3>Risk</h3>
-<ul>
-  <li>A complex and often subjective calculation of how likely a fall would be</li>
-  <li>Can depend on the skill of the climber, can be an intrinsic quality of a movement</li>
-</ul>
-<h3>Consequence</h3>
-<ul>
-  <li>The result of a fall</li>
-  <li>Ranges from no consequence, to injury, to death at its most extreme</li>
-</ul>
+
+<div style="
+  position:absolute;
+  top:130px;
+  left:880px;
+  width:540px;
+  padding:20px;
+  padding-right: 25px;
+  border:2px solid black;
+  background:#f8f8f8;
+  font-family:sans-serif;
+">
+  <h2>Legend</h2>
+  <h3>Exposure</h3>
+  <ul>
+    <li>Sometimes a feeling, sometimes an objective reality</li>
+    <li>Almost anything with lots of air beneath it will feel exposed</li>
+    <li>Certain positions on a wall like on a prow or very insecure slab have an exposed feeling</li>
+    <li>Ultimately, each climber decides what feels exposed to them</li>
+  </ul>
+
+  <h3>Risk</h3>
+  <ul>
+    <li>A complex and often subjective calculation of how likely a fall would be</li>
+    <li>Can depend on the skill of the climber, can be an intrinsic quality of a movement</li>
+  </ul>
+
+  <h3>Consequence</h3>
+  <ul>
+    <li>The result of a fall</li>
+    <li>Ranges from no consequence, to injury, to death at its most extreme</li>
+  </ul>
+</div>
+
 </body>
 </html>
