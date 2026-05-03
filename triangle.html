@@ -221,10 +221,14 @@ li {padding-top: 0px;margin-top: 0px; font-size: large;}
     savedClimbsContainer.innerHTML = "";
 
     savedClimbs.forEach(climb => {
+      const climbRow = document.createElement("div");
+      climbRow.style.display = "flex";
+      climbRow.style.alignItems = "center";
+      climbRow.style.gap = "10px";
+      climbRow.style.margin = "8px 0";
+
       const climbButton = document.createElement("button");
       climbButton.textContent = climb.name;
-      climbButton.style.display = "block";
-      climbButton.style.margin = "8px 0";
       climbButton.style.fontSize = "20px";
       climbButton.style.padding = "8px 12px";
       climbButton.style.cursor = "pointer";
@@ -243,7 +247,21 @@ li {padding-top: 0px;margin-top: 0px; font-size: large;}
         updateShape();
       });
 
-      savedClimbsContainer.appendChild(climbButton);
+      const deleteButton = document.createElement("button");
+      deleteButton.textContent = "Delete";
+      deleteButton.style.fontSize = "18px";
+      deleteButton.style.padding = "8px 12px";
+      deleteButton.style.cursor = "pointer";
+
+      deleteButton.addEventListener("click", () => {
+        const updatedClimbs = savedClimbs.filter(savedClimb => savedClimb.name !== climb.name);
+        localStorage.setItem("savedClimbs", JSON.stringify(updatedClimbs));
+        displaySavedClimbs();
+      });
+
+      climbRow.appendChild(climbButton);
+      climbRow.appendChild(deleteButton);
+      savedClimbsContainer.appendChild(climbRow);
     });
   }
 
