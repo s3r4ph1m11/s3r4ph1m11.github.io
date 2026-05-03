@@ -37,6 +37,15 @@ li {padding-top: 0px;margin-top: 0px; font-size: large;}
 
 <h1>Interactive Fear Matrix</h1>
 
+<div style="font-family:sans-serif; font-size:24px; margin-bottom:15px;">
+  <label for="climb-name">Climb name:</label>
+  <input
+    id="climb-name"
+    type="text"
+    style="font-size:22px; padding:6px; margin-left:10px; width:300px;"
+  />
+</div>
+
 <svg id="graph" width="1000" height="700" style="background:white;">
 
   <polygon
@@ -83,11 +92,32 @@ li {padding-top: 0px;margin-top: 0px; font-size: large;}
   Profile:
 </div>
 
+<button
+  id="save-climb"
+  style="
+    margin-top:20px;
+    font-size:24px;
+    padding:10px 20px;
+    font-family:sans-serif;
+    cursor:pointer;
+  "
+>
+  Save
+</button>
+
+<div style="font-family:sans-serif; margin-top:25px;">
+  <h2>Saved Climbs</h2>
+  <div id="saved-climbs"></div>
+</div>
+
 <script>
   const svg = document.getElementById("graph");
   const points = document.querySelectorAll(".hit-area");
   const shape = document.getElementById("profile-shape");
   const output = document.getElementById("profile-output");
+  const climbNameInput = document.getElementById("climb-name");
+  const saveClimbButton = document.getElementById("save-climb");
+  const savedClimbsContainer = document.getElementById("saved-climbs");
 
   const center = { x: 450, y: 450 };
 
@@ -158,7 +188,67 @@ li {padding-top: 0px;margin-top: 0px; font-size: large;}
     document.body.style.cursor = "default";
   }
 
+  saveClimbButton.addEventListener("click", () => {
+    const climbName = climbNameInput.value.trim();
+
+    if (climbName === "") {
+      alert("Please enter a climb name.");
+      return;
+    }
+
+    const climbData = {
+      name: climbName,
+      top: getPoint("top"),
+      left: getPoint("left"),
+      right: getPoint("right")
+    };
+
+    const savedClimbs = JSON.parse(localStorage.getItem("savedClimbs")) || [];
+    const existingIndex = savedClimbs.findIndex(climb => climb.name === climbName);
+
+    if (existingIndex >= 0) {
+      savedClimbs[existingIndex] = climbData;
+    } else {
+      savedClimbs.push(climbData);
+    }
+
+    localStorage.setItem("savedClimbs", JSON.stringify(savedClimbs));
+    displaySavedClimbs();
+  });
+
+  function displaySavedClimbs() {
+    const savedClimbs = JSON.parse(localStorage.getItem("savedClimbs")) || [];
+    savedClimbsContainer.innerHTML = "";
+
+    savedClimbs.forEach(climb => {
+      const climbButton = document.createElement("button");
+      climbButton.textContent = climb.name;
+      climbButton.style.display = "block";
+      climbButton.style.margin = "8px 0";
+      climbButton.style.fontSize = "20px";
+      climbButton.style.padding = "8px 12px";
+      climbButton.style.cursor = "pointer";
+
+      climbButton.addEventListener("click", () => {
+        climbNameInput.value = climb.name;
+
+        movePoint("top", climb.top.x, climb.top.y);
+        movePoint("left", climb.left.x, climb.left.y);
+        movePoint("right", climb.right.x, climb.right.y);
+
+        localStorage.setItem("top", JSON.stringify(climb.top));
+        localStorage.setItem("left", JSON.stringify(climb.left));
+        localStorage.setItem("right", JSON.stringify(climb.right));
+
+        updateShape();
+      });
+
+      savedClimbsContainer.appendChild(climbButton);
+    });
+  }
+
   updateShape();
+  displaySavedClimbs();
 
   function movePoint(axisName, x, y) {
     const hitArea = document.querySelector(
