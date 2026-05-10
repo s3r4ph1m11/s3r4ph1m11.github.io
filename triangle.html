@@ -66,6 +66,12 @@ li {padding-top: 0px;margin-top: 0px; font-size: large;}
     Sign In
   </button>
 </div>
+  <div
+  id="auth-status"
+  style="font-family:sans-serif; font-size:18px; margin-top:10px;"
+>
+  Not signed in
+</div>
 
 <div style="font-family:sans-serif; font-size:24px; margin-bottom:15px;">
   <label for="climb-name">Climb name:</label>
@@ -157,6 +163,7 @@ li {padding-top: 0px;margin-top: 0px; font-size: large;}
   const climbNameInput = document.getElementById("climb-name");
   const saveClimbButton = document.getElementById("save-climb");
   const savedClimbsContainer = document.getElementById("saved-climbs");
+  const authStatus = document.getElementById("auth-status");
   const signUpButton = document.getElementById("sign-up");
   const signInButton = document.getElementById("sign-in");
 
@@ -185,11 +192,12 @@ signInButton.addEventListener("click", async () => {
     password
   });
 
-  if (error) {
-    alert(error.message);
-  } else {
-    alert("Signed in.");
-  }
+if (error) {
+  alert(error.message);
+} else {
+  authStatus.textContent = "Signed in as " + email;
+  alert("Signed in.");
+}
 });
 
   const center = { x: 450, y: 450 };
