@@ -269,13 +269,20 @@ if (error) {
     document.body.style.cursor = "default";
   }
 
-  saveClimbButton.addEventListener("click", () => {
-    const climbName = climbNameInput.value.trim();
+saveClimbButton.addEventListener("click", async () => {
+  const climbName = climbNameInput.value.trim();
 
     if (climbName === "") {
       alert("Please enter a climb name.");
       return;
     }
+  const { data: userData, error: userError } =
+  await supabaseClient.auth.getUser();
+
+if (userError || !userData.user) {
+  alert("Please sign in before saving.");
+  return;
+}
 
     const climbData = {
       name: climbName,
@@ -295,6 +302,7 @@ if (error) {
 
     localStorage.setItem("savedClimbs", JSON.stringify(savedClimbs));
     displaySavedClimbs();
+  const { error } = await supabaseClient  .from("climb_graphs")  .insert({    climb_name: climbName,    user_id: userData.user.id,    top: getPoint("top"),    left_point: getPoint("left"),    right_point: getPoint("right")  });if (error) {  alert(error.message);} else {  alert("Saved to Supabase.");}
   });
 
   function displaySavedClimbs() {
