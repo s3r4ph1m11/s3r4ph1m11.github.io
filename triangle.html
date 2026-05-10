@@ -110,7 +110,16 @@ li {padding-top: 0px;margin-top: 0px; font-size: large;}
   <div id="saved-climbs"></div>
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
+  const supabaseUrl = "https://ncpjhlvuwuiqwsixpndj.supabase.co";
+  const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5jcGpobHZ1d3VpcXdzaXhwbmRqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc2ODExNTksImV4cCI6MjA5MzI1NzE1OX0.HX0YgA3niwOEBcrd_65n18CdKqDVj6B-X_HJTHxKn4Q";
+  const supabaseClient = supabase.createClient(
+  supabaseUrl,
+  supabaseKey
+);
+  
+  console.log("Supabase connected:", supabaseClient);
   const svg = document.getElementById("graph");
   const points = document.querySelectorAll(".hit-area");
   const shape = document.getElementById("profile-shape");
