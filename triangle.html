@@ -157,6 +157,40 @@ li {padding-top: 0px;margin-top: 0px; font-size: large;}
   const climbNameInput = document.getElementById("climb-name");
   const saveClimbButton = document.getElementById("save-climb");
   const savedClimbsContainer = document.getElementById("saved-climbs");
+  const signUpButton = document.getElementById("sign-up");
+  const signInButton = document.getElementById("sign-in");
+
+signUpButton.addEventListener("click", async () => {
+  const email = document.getElementById("email").value;
+  const password = document.getElementById("password").value;
+
+  const { error } = await supabaseClient.auth.signUp({
+    email,
+    password
+  });
+
+  if (error) {
+    alert(error.message);
+  } else {
+    alert("Check your email to confirm your account.");
+  }
+});
+
+signInButton.addEventListener("click", async () => {
+  const email = document.getElementById("email").value;
+  const password = document.getElementById("password").value;
+
+  const { error } = await supabaseClient.auth.signInWithPassword({
+    email,
+    password
+  });
+
+  if (error) {
+    alert(error.message);
+  } else {
+    alert("Signed in.");
+  }
+});
 
   const center = { x: 450, y: 450 };
 
