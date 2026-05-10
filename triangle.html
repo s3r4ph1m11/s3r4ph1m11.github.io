@@ -360,10 +360,34 @@ async function loadClimbsFromSupabase() {
     climbButton.style.margin = "8px";
     climbButton.style.cursor = "pointer";
 
-    climbButton.addEventListener("click", () => {
-      climbNameInput.value = climb.name;
-      alert("Selected climb: " + climb.name);
-    });
+    climbButton.addEventListener("click", async () => {
+  climbNameInput.value = climb.name;
+
+  const { data, error } = await supabaseClient
+    .from("climb_graphs")
+    .select("top, left_point, right_point")
+    .eq("climb_id", climb.id);
+
+  if (error) {
+    alert(error.message);
+    return;
+  }
+
+  if (!data || data.length === 0) {
+    alert("No graphs saved for this climb yet.");
+    return;
+  }
+
+  const avgTop = averagePoints(data.map(row => row.top));
+  const avgLeft = averagePoints(data.map(row => row.left_point));
+  const avgRight = averagePoints(data.map(row => row.right_point));
+
+  movePoint("top", avgTop.x, avgTop.y);
+  movePoint("left", avgLeft.x, avgLeft.y);
+  movePoint("right", avgRight.x, avgRight.y);
+
+  updateShape();
+});
 
     savedClimbsContainer.appendChild(climbButton);
   });
@@ -533,6 +557,8 @@ async function loadClimbsFromSupabase() {
     return "high";
   }
 
+  function averagePoints(points) {  const total = points.reduce(    (sum, point) => {      sum.x += point.x;      sum.y += point.y;      return sum;    },    { x: 0, y: 0 }  );  return {    x: total.x / points.length,    y: total.y / points.length  };}
+  
   function projectPointOntoAxis(mouse, start, end) {
     const dx = end.x - start.x;
     const dy = end.y - start.y;
