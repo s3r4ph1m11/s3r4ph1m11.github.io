@@ -338,7 +338,36 @@ if (error) {
   alert("Climb and graph saved.");
 }
 });
+  
+async function loadClimbsFromSupabase() {
+  const { data, error } = await supabaseClient
+    .from("climbs")
+    .select("id, name")
+    .order("name");
 
+  if (error) {
+    alert(error.message);
+    return;
+  }
+
+  savedClimbsContainer.innerHTML = "";
+
+  data.forEach(climb => {
+    const climbButton = document.createElement("button");
+    climbButton.textContent = climb.name;
+    climbButton.style.fontSize = "20px";
+    climbButton.style.padding = "8px 12px";
+    climbButton.style.margin = "8px";
+    climbButton.style.cursor = "pointer";
+
+    climbButton.addEventListener("click", () => {
+      climbNameInput.value = climb.name;
+      alert("Selected climb: " + climb.name);
+    });
+
+    savedClimbsContainer.appendChild(climbButton);
+  });
+}
   function displaySavedClimbs() {
     const savedClimbs = JSON.parse(localStorage.getItem("savedClimbs")) || [];
     savedClimbsContainer.innerHTML = "";
@@ -389,8 +418,8 @@ if (error) {
   }
 
   updateShape();
-  displaySavedClimbs();
-
+  loadClimbsFromSupabase();
+  
   function movePoint(axisName, x, y) {
     const hitArea = document.querySelector(
       `.hit-area[data-axis="${axisName}"]`
