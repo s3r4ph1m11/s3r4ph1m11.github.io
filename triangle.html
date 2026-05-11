@@ -99,12 +99,21 @@ li {padding-top: 0px;margin-top: 0px; font-size: large;}
   <line x1="450" y1="450" x2="138" y2="630" stroke="black" stroke-width="2" />
   <line x1="450" y1="450" x2="762" y2="630" stroke="black" stroke-width="2" />
 
-  <path
-    id="profile-shape"
-    fill="rgba(249, 250, 242, 0.75)"
-    stroke="black"
-    stroke-width="1.5"
-  />
+<path
+  id="average-shape"
+  fill="rgba(120, 120, 120, 0.25)"
+  stroke="gray"
+  stroke-width="2"
+  stroke-dasharray="6 6"
+  pointer-events="none"
+/>
+
+<path
+  id="profile-shape"
+  fill="rgba(249, 250, 242, 0.75)"
+  stroke="black"
+  stroke-width="1.5"
+/>
 
   <!-- Large invisible hit areas -->
   <circle class="hit-area" data-axis="top" cx="450" cy="390" r="55" fill="rgba(0,0,0,0.001)" />
@@ -158,6 +167,7 @@ li {padding-top: 0px;margin-top: 0px; font-size: large;}
   console.log("Supabase connected:", supabaseClient);
   const svg = document.getElementById("graph");
   const points = document.querySelectorAll(".hit-area");
+  const averageShape = document.getElementById("average-shape");
   const shape = document.getElementById("profile-shape");
   const output = document.getElementById("profile-output");
   const climbNameInput = document.getElementById("climb-name");
@@ -382,11 +392,7 @@ async function loadClimbsFromSupabase() {
   const avgLeft = averagePoints(data.map(row => row.left_point));
   const avgRight = averagePoints(data.map(row => row.right_point));
 
-  movePoint("top", avgTop.x, avgTop.y);
-  movePoint("left", avgLeft.x, avgLeft.y);
-  movePoint("right", avgRight.x, avgRight.y);
-
-  updateShape();
+drawAverageShape(avgTop, avgLeft, avgRight);
 });
 
     savedClimbsContainer.appendChild(climbButton);
@@ -557,6 +563,18 @@ async function loadClimbsFromSupabase() {
     return "high";
   }
 
+function drawAverageShape(top, left, right) {
+  const d = `
+    M ${top.x} ${top.y}
+    Q ${center.x} ${center.y} ${left.x} ${left.y}
+    Q ${center.x} ${center.y} ${right.x} ${right.y}
+    Q ${center.x} ${center.y} ${top.x} ${top.y}
+    Z
+  `;
+
+  averageShape.setAttribute("d", d);
+}
+  
   function averagePoints(points) {  const total = points.reduce(    (sum, point) => {      sum.x += point.x;      sum.y += point.y;      return sum;    },    { x: 0, y: 0 }  );  return {    x: total.x / points.length,    y: total.y / points.length  };}
   
   function projectPointOntoAxis(mouse, start, end) {
