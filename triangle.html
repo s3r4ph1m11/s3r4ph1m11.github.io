@@ -73,13 +73,16 @@ li {padding-top: 0px;margin-top: 0px; font-size: large;}
   Not signed in
 </div>
 
-<div style="font-family:sans-serif; font-size:24px; margin-bottom:15px;">
-  <label for="climb-name">Climb name:</label>
-  <input
-    id="climb-name"
-    type="text"
-    style="font-size:22px; padding:6px; margin-left:10px; width:300px;"
-  />
+<div
+  id="selected-climb"
+  style="
+    font-family:sans-serif;
+    font-size:32px;
+    margin-bottom:15px;
+    font-weight:bold;
+  "
+>
+  Climb name: None Selected
 </div>
 
 <svg id="graph" width="1000" height="700" style="background:white;">
@@ -137,6 +140,15 @@ li {padding-top: 0px;margin-top: 0px; font-size: large;}
   Profile:
 </div>
 
+  <div style="font-family:sans-serif; font-size:24px; margin-top:20px;">
+  <label for="climb-name">Add a new climb:</label>
+  <input
+    id="climb-name"
+    type="text"
+    style="font-size:22px; padding:6px; margin-left:10px; width:300px;"
+  />
+</div>
+  
 <button
   id="save-climb"
   style="
@@ -157,6 +169,7 @@ li {padding-top: 0px;margin-top: 0px; font-size: large;}
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
+  const selectedClimbText = document.getElementById("selected-climb");
   const supabaseUrl = "https://ncpjhlvuwuiqwsixpndj.supabase.co";
   const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5jcGpobHZ1d3VpcXdzaXhwbmRqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc2ODExNTksImV4cCI6MjA5MzI1NzE1OX0.HX0YgA3niwOEBcrd_65n18CdKqDVj6B-X_HJTHxKn4Q";
   const supabaseClient = supabase.createClient(
@@ -371,7 +384,7 @@ async function loadClimbsFromSupabase() {
     climbButton.style.cursor = "pointer";
 
     climbButton.addEventListener("click", async () => {
-  climbNameInput.value = climb.name;
+  selectedClimbText.textContent = "Climb name: " + climb.name;
 
   const { data, error } = await supabaseClient
     .from("climb_graphs")
@@ -416,7 +429,7 @@ drawAverageShape(avgTop, avgLeft, avgRight);
       climbButton.style.cursor = "pointer";
 
       climbButton.addEventListener("click", () => {
-        climbNameInput.value = climb.name;
+        selectedClimbText.textContent = "Climb name: " + climb.name;
 
         movePoint("top", climb.top.x, climb.top.y);
         movePoint("left", climb.left.x, climb.left.y);
