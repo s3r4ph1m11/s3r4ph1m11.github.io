@@ -324,7 +324,7 @@ if (userError || !userData.user) {
     }
 
     localStorage.setItem("savedClimbs", JSON.stringify(savedClimbs));
-    displaySavedClimbs();
+    loadClimbsFromSupabase();
     const { data: climb, error: climbError } = await supabaseClient
   .from("climbs")
   .upsert(
