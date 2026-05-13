@@ -178,6 +178,29 @@ const supabaseClient = supabase.createClient(
   supabaseUrl,
   supabaseKey
 );
+  const svg = document.getElementById("graph");
+const points = document.querySelectorAll(".hit-area");
+const averageShape = document.getElementById("average-shape");
+const shape = document.getElementById("profile-shape");
+const output = document.getElementById("profile-output");
+const climbNameInput = document.getElementById("climb-name");
+const saveClimbButton = document.getElementById("save-climb");
+const savedClimbsContainer = document.getElementById("saved-climbs");
+const authStatus = document.getElementById("auth-status");
+const signUpButton = document.getElementById("sign-up");
+const signInButton = document.getElementById("sign-in");
+
+const center = { x: 450, y: 450 };
+
+const axes = {
+  top:   { x: 450, y: 90 },
+  left:  { x: 138, y: 630 },
+  right: { x: 762, y: 630 }
+};
+
+let isDragging = false;
+let dragAxis = null;
+let activePointerId = null;
 
 signInButton.addEventListener("click", async () => {
   const email = document.getElementById("email").value;
