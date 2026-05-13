@@ -169,42 +169,15 @@ li {padding-top: 0px;margin-top: 0px; font-size: large;}
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
-  const selectedClimbText = document.getElementById("selected-climb");
-  const supabaseUrl = "https://ncpjhlvuwuiqwsixpndj.supabase.co";
-  const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5jcGpobHZ1d3VpcXdzaXhwbmRqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc2ODExNTksImV4cCI6MjA5MzI1NzE1OX0.HX0YgA3niwOEBcrd_65n18CdKqDVj6B-X_HJTHxKn4Q";
-  const supabaseClient = supabase.createClient(
+const selectedClimbText = document.getElementById("selected-climb");
+
+const supabaseUrl = "https://ncpjhlvuwuiqwsixpndj.supabase.co";
+const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5jcGpobHZ1d3VpcXdzaXhwbmRqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc2ODExNTksImV4cCI6MjA5MzI1NzE1OX0.HX0YgA3niwOEBcrd_65n18CdKqDVj6B-X_HJTHxKn4Q";
+
+const supabaseClient = supabase.createClient(
   supabaseUrl,
   supabaseKey
 );
-  
-  console.log("Supabase connected:", supabaseClient);
-  const svg = document.getElementById("graph");
-  const points = document.querySelectorAll(".hit-area");
-  const averageShape = document.getElementById("average-shape");
-  const shape = document.getElementById("profile-shape");
-  const output = document.getElementById("profile-output");
-  const climbNameInput = document.getElementById("climb-name");
-  const saveClimbButton = document.getElementById("save-climb");
-  const savedClimbsContainer = document.getElementById("saved-climbs");
-  const authStatus = document.getElementById("auth-status");
-  const signUpButton = document.getElementById("sign-up");
-  const signInButton = document.getElementById("sign-in");
-
-signUpButton.addEventListener("click", async () => {
-  const email = document.getElementById("email").value;
-  const password = document.getElementById("password").value;
-
-  const { error } = await supabaseClient.auth.signUp({
-    email,
-    password
-  });
-
-  if (error) {
-    alert(error.message);
-  } else {
-    alert("Check your email to confirm your account.");
-  }
-});
 
 signInButton.addEventListener("click", async () => {
   const email = document.getElementById("email").value;
@@ -215,153 +188,118 @@ signInButton.addEventListener("click", async () => {
     password
   });
 
-if (error) {
-  alert(error.message);
-} else {
-  authStatus.textContent = "Signed in as " + email;
-  alert("Signed in.");
-}
+  if (error) {
+    alert(error.message);
+  } else {
+    authStatus.textContent = "Signed in as " + email;
+    alert("Signed in.");
+  }
 });
 
-  const center = { x: 450, y: 450 };
+points.forEach(point => {
+  const axisName = point.dataset.axis;
 
-  const axes = {
-    top:   { x: 450, y: 90 },
-    left:  { x: 138, y: 630 },
-    right: { x: 762, y: 630 }
+  point.addEventListener("pointerdown", event => {
+    isDragging = true;
+    dragAxis = axisName;
+    activePointerId = event.pointerId;
+
+    svg.setPointerCapture(event.pointerId);
+
+    document.body.style.cursor = "grabbing";
+    event.preventDefault();
+  });
+});
+
+svg.addEventListener("pointermove", event => {
+  if (!isDragging || event.pointerId !== activePointerId) return;
+
+  const rect = svg.getBoundingClientRect();
+
+  const mouse = {
+    x: event.clientX - rect.left,
+    y: event.clientY - rect.top
   };
 
-  let isDragging = false;
-  let dragAxis = null;
-  let activePointerId = null;
+  const projected = projectPointOntoAxis(
+    mouse,
+    center,
+    axes[dragAxis]
+  );
 
-  points.forEach(point => {
-    const axisName = point.dataset.axis;
-    const saved = localStorage.getItem(axisName);
+  movePoint(dragAxis, projected.x, projected.y);
+  updateShape();
+});
 
-    if (saved) {
-      const position = JSON.parse(saved);
-      movePoint(axisName, position.x, position.y);
-    }
+svg.addEventListener("pointerup", stopDragging);
+svg.addEventListener("pointercancel", stopDragging);
+svg.addEventListener("lostpointercapture", stopDragging);
 
-    point.addEventListener("pointerdown", event => {
-      isDragging = true;
-      dragAxis = axisName;
-      activePointerId = event.pointerId;
-
-      svg.setPointerCapture(event.pointerId);
-
-      document.body.style.cursor = "grabbing";
-      event.preventDefault();
-    });
-  });
-
-  svg.addEventListener("pointermove", event => {
-    if (!isDragging || event.pointerId !== activePointerId) return;
-
-    const rect = svg.getBoundingClientRect();
-
-    const mouse = {
-      x: event.clientX - rect.left,
-      y: event.clientY - rect.top
-    };
-
-    const projected = projectPointOntoAxis(
-      mouse,
-      center,
-      axes[dragAxis]
-    );
-
-    movePoint(dragAxis, projected.x, projected.y);
-    localStorage.setItem(dragAxis, JSON.stringify(projected));
-    updateShape();
-  });
-
-  svg.addEventListener("pointerup", stopDragging);
-  svg.addEventListener("pointercancel", stopDragging);
-  svg.addEventListener("lostpointercapture", stopDragging);
-
-  function stopDragging() {
-    if (activePointerId !== null && svg.hasPointerCapture(activePointerId)) {
-      svg.releasePointerCapture(activePointerId);
-    }
-
-    isDragging = false;
-    dragAxis = null;
-    activePointerId = null;
-    document.body.style.cursor = "default";
+function stopDragging() {
+  if (activePointerId !== null && svg.hasPointerCapture(activePointerId)) {
+    svg.releasePointerCapture(activePointerId);
   }
+
+  isDragging = false;
+  dragAxis = null;
+  activePointerId = null;
+  document.body.style.cursor = "default";
+}
 
 saveClimbButton.addEventListener("click", async () => {
   const climbName = climbNameInput.value.trim();
 
-    if (climbName === "") {
-      alert("Please enter a climb name.");
-      return;
-    }
+  if (climbName === "") {
+    alert("Please enter a climb name.");
+    return;
+  }
+
   const { data: userData, error: userError } =
-  await supabaseClient.auth.getUser();
+    await supabaseClient.auth.getUser();
 
-if (userError || !userData.user) {
-  alert("Please sign in before saving.");
-  return;
-}
+  if (userError || !userData.user) {
+    alert("Please sign in before saving.");
+    return;
+  }
 
-    const climbData = {
-      name: climbName,
+  const { data: climb, error: climbError } = await supabaseClient
+    .from("climbs")
+    .upsert(
+      {
+        name: climbName,
+        created_by: userData.user.id
+      },
+      {
+        onConflict: "name"
+      }
+    )
+    .select()
+    .single();
+
+  if (climbError) {
+    alert(climbError.message);
+    return;
+  }
+
+  const { error } = await supabaseClient
+    .from("climb_graphs")
+    .insert({
+      climb_name: climbName,
+      climb_id: climb.id,
+      user_id: userData.user.id,
       top: getPoint("top"),
-      left: getPoint("left"),
-      right: getPoint("right")
-    };
+      left_point: getPoint("left"),
+      right_point: getPoint("right")
+    });
 
-    const savedClimbs = JSON.parse(localStorage.getItem("savedClimbs")) || [];
-    const existingIndex = savedClimbs.findIndex(climb => climb.name === climbName);
-
-    if (existingIndex >= 0) {
-      savedClimbs[existingIndex] = climbData;
-    } else {
-      savedClimbs.push(climbData);
-    }
-
-    localStorage.setItem("savedClimbs", JSON.stringify(savedClimbs));
+  if (error) {
+    alert(error.message);
+  } else {
+    alert("Climb and graph saved.");
     loadClimbsFromSupabase();
-    const { data: climb, error: climbError } = await supabaseClient
-  .from("climbs")
-  .upsert(
-    {
-      name: climbName,
-      created_by: userData.user.id
-    },
-    {
-      onConflict: "name"
-    }
-  )
-  .select()
-  .single();
-
-if (climbError) {
-  alert(climbError.message);
-  return;
-}
-
-const { error } = await supabaseClient
-  .from("climb_graphs")
-  .insert({
-    climb_name: climbName,
-    climb_id: climb.id,
-    user_id: userData.user.id,
-    top: getPoint("top"),
-    left_point: getPoint("left"),
-    right_point: getPoint("right")
-  });
-
-if (error) {
-  alert(error.message);
-} else {
-  alert("Climb and graph saved.");
-}
+  }
 });
-  
+
 async function loadClimbsFromSupabase() {
   const { data, error } = await supabaseClient
     .from("climbs")
@@ -377,6 +315,7 @@ async function loadClimbsFromSupabase() {
 
   data.forEach(climb => {
     const climbButton = document.createElement("button");
+
     climbButton.textContent = climb.name;
     climbButton.style.fontSize = "20px";
     climbButton.style.padding = "8px 12px";
@@ -384,197 +323,159 @@ async function loadClimbsFromSupabase() {
     climbButton.style.cursor = "pointer";
 
     climbButton.addEventListener("click", async () => {
-  selectedClimbText.textContent = "Climb name: " + climb.name;
+      selectedClimbText.textContent =
+        "Climb name: " + climb.name;
 
-  const { data, error } = await supabaseClient
-    .from("climb_graphs")
-    .select("top, left_point, right_point")
-    .eq("climb_id", climb.id);
+      const { data, error } = await supabaseClient
+        .from("climb_graphs")
+        .select("top, left_point, right_point")
+        .eq("climb_id", climb.id);
 
-  if (error) {
-    alert(error.message);
-    return;
-  }
+      if (error) {
+        alert(error.message);
+        return;
+      }
 
-  if (!data || data.length === 0) {
-    alert("No graphs saved for this climb yet.");
-    return;
-  }
+      if (!data || data.length === 0) {
+        alert("No graphs saved for this climb yet.");
+        return;
+      }
 
-  const avgTop = averagePoints(data.map(row => row.top));
-  const avgLeft = averagePoints(data.map(row => row.left_point));
-  const avgRight = averagePoints(data.map(row => row.right_point));
+      const avgTop = averagePoints(
+        data.map(row => row.top)
+      );
 
-drawAverageShape(avgTop, avgLeft, avgRight);
-});
+      const avgLeft = averagePoints(
+        data.map(row => row.left_point)
+      );
+
+      const avgRight = averagePoints(
+        data.map(row => row.right_point)
+      );
+
+      drawAverageShape(avgTop, avgLeft, avgRight);
+    });
 
     savedClimbsContainer.appendChild(climbButton);
   });
 }
-  function displaySavedClimbs() {
-    const savedClimbs = JSON.parse(localStorage.getItem("savedClimbs")) || [];
-    savedClimbsContainer.innerHTML = "";
 
-    savedClimbs.forEach(climb => {
-      const climbRow = document.createElement("div");
-      climbRow.style.display = "flex";
-      climbRow.style.alignItems = "center";
-      climbRow.style.gap = "10px";
-      climbRow.style.margin = "8px 0";
+updateShape();
+loadClimbsFromSupabase();
 
-      const climbButton = document.createElement("button");
-      climbButton.textContent = climb.name;
-      climbButton.style.fontSize = "20px";
-      climbButton.style.padding = "8px 12px";
-      climbButton.style.cursor = "pointer";
+function movePoint(axisName, x, y) {
+  const hitArea = document.querySelector(
+    `.hit-area[data-axis="${axisName}"]`
+  );
 
-      climbButton.addEventListener("click", () => {
-        selectedClimbText.textContent = "Climb name: " + climb.name;
+  const visiblePoint = document.querySelector(
+    `.visible-point[data-axis="${axisName}"]`
+  );
 
-        movePoint("top", climb.top.x, climb.top.y);
-        movePoint("left", climb.left.x, climb.left.y);
-        movePoint("right", climb.right.x, climb.right.y);
+  hitArea.setAttribute("cx", x);
+  hitArea.setAttribute("cy", y);
 
-        localStorage.setItem("top", JSON.stringify(climb.top));
-        localStorage.setItem("left", JSON.stringify(climb.left));
-        localStorage.setItem("right", JSON.stringify(climb.right));
+  visiblePoint.setAttribute("cx", x);
+  visiblePoint.setAttribute("cy", y);
+}
 
-        updateShape();
-      });
+function updateShape() {
+  const top = getPoint("top");
+  const left = getPoint("left");
+  const right = getPoint("right");
 
-      const deleteButton = document.createElement("button");
-      deleteButton.textContent = "Delete";
-      deleteButton.style.fontSize = "18px";
-      deleteButton.style.padding = "8px 12px";
-      deleteButton.style.cursor = "pointer";
+  const d = `
+    M ${top.x} ${top.y}
+    Q ${center.x} ${center.y} ${left.x} ${left.y}
+    Q ${center.x} ${center.y} ${right.x} ${right.y}
+    Q ${center.x} ${center.y} ${top.x} ${top.y}
+    Z
+  `;
 
-      deleteButton.addEventListener("click", () => {
-        const updatedClimbs = savedClimbs.filter(savedClimb => savedClimb.name !== climb.name);
-        localStorage.setItem("savedClimbs", JSON.stringify(updatedClimbs));
-        displaySavedClimbs();
-      });
+  shape.setAttribute("d", d);
 
-      climbRow.appendChild(climbButton);
-      climbRow.appendChild(deleteButton);
-      savedClimbsContainer.appendChild(climbRow);
-    });
-  }
+  const exposure = getAxisLevel(top, axes.top);
+  const risk = getAxisLevel(left, axes.left);
+  const consequence = getAxisLevel(right, axes.right);
 
-  updateShape();
-  loadClimbsFromSupabase();
-  
-  function movePoint(axisName, x, y) {
-    const hitArea = document.querySelector(
-      `.hit-area[data-axis="${axisName}"]`
-    );
+  const profileKey =
+    `${exposure}-${risk}-${consequence}`;
 
-    const visiblePoint = document.querySelector(
-      `.visible-point[data-axis="${axisName}"]`
-    );
+  const profiles = {
+    "low-low-low": "Low Intensity",
+    "low-low-medium": "Controlled Practice",
+    "low-low-high": "Hidden Consequence",
 
-    hitArea.setAttribute("cx", x);
-    hitArea.setAttribute("cy", y);
+    "low-medium-low": "Casual Lead",
+    "low-medium-medium": "Balanced Climbing",
+    "low-medium-high": "Serious Fall Potential",
 
-    visiblePoint.setAttribute("cx", x);
-    visiblePoint.setAttribute("cy", y);
-  }
+    "low-high-low": "Technical Risk",
+    "low-high-medium": "Highball",
+    "low-high-high": "Danger Zone",
 
-  function updateShape() {
-    const top = getPoint("top");
-    const left = getPoint("left");
-    const right = getPoint("right");
+    "medium-low-low": "Comfortable Exposure",
+    "medium-low-medium": "Exposed But Safe",
+    "medium-low-high": "Free Solo",
 
-    const d = `
-      M ${top.x} ${top.y}
-      Q ${center.x} ${center.y} ${left.x} ${left.y}
-      Q ${center.x} ${center.y} ${right.x} ${right.y}
-      Q ${center.x} ${center.y} ${top.x} ${top.y}
-      Z
-    `;
+    "medium-medium-low": "Sport Climbing",
+    "medium-medium-medium": "All-Around Climbing",
+    "medium-medium-high": "Committed Climbing",
 
-    shape.setAttribute("d", d);
+    "medium-high-low": "Risky Movement",
+    "medium-high-medium": "Bold Climbing",
+    "medium-high-high": "Extreme Commitment",
 
-    const exposure = getAxisLevel(top, axes.top);
-    const risk = getAxisLevel(left, axes.left);
-    const consequence = getAxisLevel(right, axes.right);
+    "high-low-low": "Airy But Safe",
+    "high-low-medium": "Exposed Movement",
+    "high-low-high": "No-Fall Zone",
 
-    const profileKey = `${exposure}-${risk}-${consequence}`;
+    "high-medium-low": "Lead Climbing",
+    "high-medium-medium": "Exposed Lead",
+    "high-medium-high": "Big Wall",
 
-    const profiles = {
-      "low-low-low": "Low Intensity",
-      "low-low-medium": "Controlled Practice",
-      "low-low-high": "Hidden Consequence",
+    "high-high-low": "Unstable Movement",
+    "high-high-medium": "Serious Risk",
+    "high-high-high": "Maximum Fear"
+  };
 
-      "low-medium-low": "Casual Lead",
-      "low-medium-medium": "Balanced Climbing",
-      "low-medium-high": "Serious Fall Potential",
+  output.textContent =
+    `Profile: ${profiles[profileKey]}`;
+}
 
-      "low-high-low": "Technical Risk",
-      "low-high-medium": "Highball",
-      "low-high-high": "Danger Zone",
+function getPoint(axisName) {
+  const point = document.querySelector(
+    `.visible-point[data-axis="${axisName}"]`
+  );
 
-      "medium-low-low": "Comfortable Exposure",
-      "medium-low-medium": "Exposed But Safe",
-      "medium-low-high": "Free Solo",
+  return {
+    x: Number(point.getAttribute("cx")),
+    y: Number(point.getAttribute("cy"))
+  };
+}
 
-      "medium-medium-low": "Sport Climbing",
-      "medium-medium-medium": "All-Around Climbing",
-      "medium-medium-high": "Committed Climbing",
+function getAxisLevel(point, axisEnd) {
+  const dxTotal = axisEnd.x - center.x;
+  const dyTotal = axisEnd.y - center.y;
 
-      "medium-high-low": "Risky Movement",
-      "medium-high-medium": "Bold Climbing",
-      "medium-high-high": "Extreme Commitment",
+  const dxPoint = point.x - center.x;
+  const dyPoint = point.y - center.y;
 
-      "high-low-low": "Airy But Safe",
-      "high-low-medium": "Exposed Movement",
-      "high-low-high": "No-Fall Zone",
+  const totalDistance = Math.sqrt(
+    dxTotal * dxTotal + dyTotal * dyTotal
+  );
 
-      "high-medium-low": "Lead Climbing",
-      "high-medium-medium": "Exposed Lead",
-      "high-medium-high": "Big Wall",
+  const pointDistance = Math.sqrt(
+    dxPoint * dxPoint + dyPoint * dyPoint
+  );
 
-      "high-high-low": "Unstable Movement",
-      "high-high-medium": "Serious Risk",
-      "high-high-high": "Maximum Fear"
-    };
+  const ratio = pointDistance / totalDistance;
 
-    output.textContent = `Profile: ${profiles[profileKey]}`;
-  }
+  if (ratio < 0.33) return "low";
+  if (ratio < 0.66) return "medium";
 
-  function getPoint(axisName) {
-    const point = document.querySelector(
-      `.visible-point[data-axis="${axisName}"]`
-    );
-
-    return {
-      x: Number(point.getAttribute("cx")),
-      y: Number(point.getAttribute("cy"))
-    };
-  }
-
-  function getAxisLevel(point, axisEnd) {
-
-    const dxTotal = axisEnd.x - center.x;
-    const dyTotal = axisEnd.y - center.y;
-
-    const dxPoint = point.x - center.x;
-    const dyPoint = point.y - center.y;
-
-    const totalDistance = Math.sqrt(
-      dxTotal * dxTotal + dyTotal * dyTotal
-    );
-
-    const pointDistance = Math.sqrt(
-      dxPoint * dxPoint + dyPoint * dyPoint
-    );
-
-    const ratio = pointDistance / totalDistance;
-
-    if (ratio < 0.33) return "low";
-    if (ratio < 0.66) return "medium";
-
-    return "high";
-  }
+  return "high";
+}
 
 function drawAverageShape(top, left, right) {
   const d = `
@@ -587,27 +488,41 @@ function drawAverageShape(top, left, right) {
 
   averageShape.setAttribute("d", d);
 }
-  
-  function averagePoints(points) {  const total = points.reduce(    (sum, point) => {      sum.x += point.x;      sum.y += point.y;      return sum;    },    { x: 0, y: 0 }  );  return {    x: total.x / points.length,    y: total.y / points.length  };}
-  
-  function projectPointOntoAxis(mouse, start, end) {
-    const dx = end.x - start.x;
-    const dy = end.y - start.y;
 
-    const lengthSquared = dx * dx + dy * dy;
+function averagePoints(points) {
+  const total = points.reduce(
+    (sum, point) => {
+      sum.x += point.x;
+      sum.y += point.y;
+      return sum;
+    },
+    { x: 0, y: 0 }
+  );
 
-    let t =
-      ((mouse.x - start.x) * dx +
-       (mouse.y - start.y) * dy) /
-      lengthSquared;
+  return {
+    x: total.x / points.length,
+    y: total.y / points.length
+  };
+}
 
-    t = Math.max(0, Math.min(1, t));
+function projectPointOntoAxis(mouse, start, end) {
+  const dx = end.x - start.x;
+  const dy = end.y - start.y;
 
-    return {
-      x: start.x + t * dx,
-      y: start.y + t * dy
-    };
-  }
+  const lengthSquared = dx * dx + dy * dy;
+
+  let t =
+    ((mouse.x - start.x) * dx +
+     (mouse.y - start.y) * dy) /
+    lengthSquared;
+
+  t = Math.max(0, Math.min(1, t));
+
+  return {
+    x: start.x + t * dx,
+    y: start.y + t * dy
+  };
+}
 </script>
 
 <div style="
