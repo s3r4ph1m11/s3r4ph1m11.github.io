@@ -24,6 +24,52 @@
     touch-action: none;
     user-select: none;
   }
+
+  .graph-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 0;
+    width: fit-content;
+    border: 2px solid black;
+    background: white;
+  }
+
+  .graph-panel {
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 6px;
+    width: 650px;
+    height: 540px;
+    background: white;
+  }
+
+  .graph-panel + .graph-panel {
+    border-left: 2px solid black;
+  }
+
+  .graph-title {
+    font-family: sans-serif;
+    font-size: 24px;
+    width: 430px;
+    margin: 0 auto 2px auto;
+    text-align: center;
+    text-decoration: none;
+  }
+
+  .graph-status {
+    min-height: 20px;
+    margin-bottom: 2px;
+    font-family: sans-serif;
+    font-size: 14px;
+    text-align: center;
+  }
+
+  #community-graph {
+    touch-action: none;
+    user-select: none;
+  }
   h1 {font-family: sans-serif;}
   h2 {
   margin-top: 0px; margin-bottom: 10px;
@@ -32,6 +78,219 @@
 h3 {padding-bottom: 0px; margin-bottom: 5px; margin-top: 0px; padding-top: 0px;}
 ul {padding-top: 0px; margin-top: 0px;}
 li {padding-top: 0px;margin-top: 0px; font-size: large;}
+
+input[type="range"] {
+  -webkit-appearance: none;
+  appearance: none;
+  accent-color: black;
+  height: 28px;
+  background: transparent;
+  width: 100%;
+}
+
+input[type="range"]::-webkit-slider-runnable-track {
+  height: 12px;
+  border: 2px solid black;
+  background:
+    linear-gradient(
+      to right,
+      transparent 24.8%,
+      black 24.8%,
+      black 25.2%,
+      transparent 25.2%,
+      transparent 49.8%,
+      black 49.8%,
+      black 50.2%,
+      transparent 50.2%,
+      transparent 74.8%,
+      black 74.8%,
+      black 75.2%,
+      transparent 75.2%
+    ),
+    white;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 8px;
+  height: 18px;
+  margin-top: -5px;
+  border: 2px solid black;
+  border-radius: 2px;
+  background: var(--slider-color);
+  cursor: grab;
+}
+
+input[type="range"]::-webkit-slider-thumb:active {
+  cursor: grabbing;
+}
+
+input[type="range"]::-moz-range-track {
+  height: 12px;
+  border: 2px solid black;
+  background:
+    linear-gradient(
+      to right,
+      transparent 24.8%,
+      black 24.8%,
+      black 25.2%,
+      transparent 25.2%,
+      transparent 49.8%,
+      black 49.8%,
+      black 50.2%,
+      transparent 50.2%,
+      transparent 74.8%,
+      black 74.8%,
+      black 75.2%,
+      transparent 75.2%
+    ),
+    white;
+}
+
+input[type="range"]::-moz-range-thumb {
+  width: 8px;
+  height: 18px;
+  border: 2px solid black;
+  border-radius: 2px;
+  background: var(--slider-color);
+  cursor: grab;
+}
+
+#exposure-slider {
+  --slider-color: red;
+  accent-color: red;
+}
+
+#risk-slider {
+  --slider-color: blue;
+  accent-color: blue;
+}
+
+#consequence-slider {
+  --slider-color: green;
+  accent-color: green;
+}
+
+.slider-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+
+  .slider-row label {
+    width: 140px;
+    padding-top: 3px;
+    font-family: sans-serif;
+    font-size: 22px;
+  }
+
+.slider-main {
+  flex: 1;
+  min-width: 0;
+}
+
+.slider-value {
+  width: 50px;
+  padding-top: 3px;
+  font-size: 20px;
+  text-align: right;
+}
+
+.section-labels {
+  position: relative;
+  min-height: 40px;
+  margin-top: -2px;
+  font-size: 14px;
+  overflow: visible;
+}
+
+.section-labels span {
+  position: absolute;
+  top: 0;
+  width: 86px;
+  transform: translateX(-50%);
+  text-align: center;
+}
+
+.section-labels span:nth-child(1) {
+  left: 0;
+}
+
+.section-labels span:nth-child(2) {
+  left: 25%;
+}
+
+.section-labels span:nth-child(3) {
+  left: 50%;
+}
+
+.section-labels span:nth-child(4) {
+  left: 75%;
+}
+
+.section-labels span:nth-child(5) {
+  left: 100%;
+}
+
+.tag-tools {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.tag-tools input,
+.tag-tools select,
+.tag-tools button {
+  font-family: sans-serif;
+  font-size: 18px;
+  padding: 6px 10px;
+}
+
+.climb-list {
+  max-width: 760px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border-top: 1px solid black;
+}
+
+.climb-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 10px 0;
+  border-bottom: 1px solid black;
+  cursor: pointer;
+}
+
+.climb-item:hover,
+.climb-item.selected {
+  background: #f8f8f8;
+}
+
+.climb-name {
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.tag-list {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 6px;
+}
+
+.tag {
+  padding: 3px 8px;
+  border: 1px solid black;
+  border-radius: 12px;
+  background: lightyellow;
+  font-size: 14px;
+}
 
 </style>
 
@@ -68,7 +327,7 @@ li {padding-top: 0px;margin-top: 0px; font-size: large;}
 </div>
   <div
   id="auth-status"
-  style="font-family:sans-serif; font-size:18px; margin-top:10px;"
+  style="font-family:sans-serif; font-size:18px; margin-top:10px; margin-bottom:25px;"
 >
   Not signed in
 </div>
@@ -85,7 +344,11 @@ li {padding-top: 0px;margin-top: 0px; font-size: large;}
   Climb name: None Selected
 </div>
 
-<svg id="graph" width="1000" height="700" style="background:white;">
+<div class="graph-row">
+  <div class="graph-panel">
+    <h2 class="graph-title">Your Graph:</h2>
+    <div id="user-log-status" class="graph-status"></div>
+<svg id="graph" width="620" height="482" viewBox="0 0 900 700" style="background:white;">
 
   <polygon
     points="450,90 138,630 762,630"
@@ -94,22 +357,13 @@ li {padding-top: 0px;margin-top: 0px; font-size: large;}
     stroke-width="2"
   />
 
-  <text x="450" y="70" text-anchor="middle" font-size="28">Exposure</text>
-  <text x="90" y="675" font-size="28">Risk</text>
-  <text x="700" y="675" font-size="28">Consequence</text>
+  <text x="450" y="70" text-anchor="middle" font-family="sans-serif" font-size="22">Exposure</text>
+  <text x="90" y="675" font-family="sans-serif" font-size="22">Risk</text>
+  <text x="700" y="675" font-family="sans-serif" font-size="22">Consequence</text>
 
   <line x1="450" y1="450" x2="450" y2="90" stroke="black" stroke-width="2" />
   <line x1="450" y1="450" x2="138" y2="630" stroke="black" stroke-width="2" />
   <line x1="450" y1="450" x2="762" y2="630" stroke="black" stroke-width="2" />
-
-<path
-  id="average-shape"
-  fill="rgba(120, 120, 120, 0.25)"
-  stroke="gray"
-  stroke-width="2"
-  stroke-dasharray="6 6"
-  pointer-events="none"
-/>
 
 <path
   id="profile-shape"
@@ -124,46 +378,197 @@ li {padding-top: 0px;margin-top: 0px; font-size: large;}
   <circle class="hit-area" data-axis="right" cx="502" cy="480" r="55" fill="rgba(0,0,0,0.001)" />
 
   <!-- Small visible dots -->
-  <circle class="visible-point" data-axis="top" cx="450" cy="390" r="6" fill="red" />
-  <circle class="visible-point" data-axis="left" cx="398" cy="480" r="6" fill="blue" />
-  <circle class="visible-point" data-axis="right" cx="502" cy="480" r="6" fill="green" />
+  <circle class="visible-point" data-axis="top" cx="450" cy="390" r="9" fill="red" />
+  <circle class="visible-point" data-axis="left" cx="398" cy="480" r="9" fill="blue" />
+  <circle class="visible-point" data-axis="right" cx="502" cy="480" r="9" fill="green" />
 
 </svg>
+  </div>
 
-<div id="profile-output"
-     style="
-       margin-top:20px;
-       font-size:32px;
-       font-family:sans-serif;
-       font-weight:bold;
-     ">
-  Profile:
+  <div class="graph-panel">
+    <h2 class="graph-title">Community Average:</h2>
+    <div class="graph-status"></div>
+<svg id="community-graph" width="620" height="482" viewBox="0 0 900 700" style="background:white;">
+
+  <polygon
+    points="450,90 138,630 762,630"
+    fill="lightyellow"
+    stroke="black"
+    stroke-width="2"
+  />
+
+  <text x="450" y="70" text-anchor="middle" font-family="sans-serif" font-size="22">Exposure</text>
+  <text x="90" y="675" font-family="sans-serif" font-size="22">Risk</text>
+  <text x="700" y="675" font-family="sans-serif" font-size="22">Consequence</text>
+
+  <line x1="450" y1="450" x2="450" y2="90" stroke="black" stroke-width="2" />
+  <line x1="450" y1="450" x2="138" y2="630" stroke="black" stroke-width="2" />
+  <line x1="450" y1="450" x2="762" y2="630" stroke="black" stroke-width="2" />
+
+<path
+  id="average-shape"
+  fill="rgba(120, 120, 120, 0.25)"
+  stroke="gray"
+  stroke-width="2"
+  stroke-dasharray="6 6"
+  pointer-events="none"
+/>
+
+</svg>
+  </div>
 </div>
 
-  <div style="font-family:sans-serif; font-size:24px; margin-top:20px;">
+<div
+  id="slider-controls"
+  style="
+    font-family:sans-serif;
+    width:760px;
+    margin-top:30px;
+    margin-bottom:20px;
+  "
+>
+  <div class="slider-row">
+    <label for="exposure-slider">Exposure</label>
+    <div class="slider-main">
+      <input id="exposure-slider" data-axis="top" type="range" min="0" max="100" value="17" />
+      <div class="section-labels" aria-hidden="true">
+        <span>None</span>
+        <span>Lowball</span>
+        <span>Highball</span>
+        <span>Single Pitch</span>
+        <span>Multi Pitch</span>
+      </div>
+    </div>
+    <span id="exposure-value" class="slider-value">17</span>
+  </div>
+
+  <div class="slider-row">
+    <label for="risk-slider">Risk</label>
+    <div class="slider-main">
+      <input id="risk-slider" data-axis="left" type="range" min="0" max="100" value="17" />
+      <div class="section-labels" aria-hidden="true">
+        <span>None</span>
+        <span>Well Below Limit</span>
+        <span>Close to Limit</span>
+        <span>At Limit</span>
+        <span>Well Above Limit</span>
+      </div>
+    </div>
+    <span id="risk-value" class="slider-value">17</span>
+  </div>
+
+  <div class="slider-row">
+    <label for="consequence-slider">Consequence</label>
+    <div class="slider-main">
+      <input id="consequence-slider" data-axis="right" type="range" min="0" max="100" value="17" />
+      <div class="section-labels" aria-hidden="true">
+        <span>None</span>
+        <span>Airy Fall</span>
+        <span>Minor Injury</span>
+        <span>Major Injury</span>
+        <span>Death</span>
+      </div>
+    </div>
+    <span id="consequence-value" class="slider-value">17</span>
+  </div>
+</div>
+
+  <div style="display:flex; align-items:center; gap:10px; font-family:sans-serif; font-size:24px; margin-top:20px;">
   <label for="climb-name">Add a new climb:</label>
   <input
     id="climb-name"
     type="text"
     style="font-size:22px; padding:6px; margin-left:10px; width:300px;"
   />
+  <label for="climb-type">Climb Type:</label>
+  <select
+    id="climb-type"
+    style="font-size:22px; padding:6px; width:300px;"
+  >
+    <option value="">Choose type</option>
+    <option value="Boulder">Boulder</option>
+    <option value="Sport Route">Sport Route</option>
+    <option value="Trad Route">Trad Route</option>
+    <option value="Multi Pitch Route">Multi Pitch Route</option>
+    <option value="Free Solo">Free Solo</option>
+  </select>
+</div>
+
+<div style="display:flex; align-items:center; gap:10px; font-family:sans-serif; font-size:22px; margin-top:12px;">
+  <label for="climb-area">Area:</label>
+  <input
+    id="climb-area"
+    type="text"
+    placeholder="Ex: Squamish"
+    style="font-size:20px; padding:6px; width:220px;"
+  />
+  <label for="climb-crag">Crag/Sector:</label>
+  <input
+    id="climb-crag"
+    type="text"
+    placeholder="Ex: Smoke Bluffs"
+    style="font-size:20px; padding:6px; width:220px;"
+  />
+  <label for="climb-wall">Wall:</label>
+  <input
+    id="climb-wall"
+    type="text"
+    placeholder="Ex: Neat and Cool"
+    style="font-size:20px; padding:6px; width:220px;"
+  />
 </div>
   
-<button
-  id="save-climb"
-  style="
-    margin-top:20px;
-    font-size:24px;
-    padding:10px 20px;
-    font-family:sans-serif;
-    cursor:pointer;
-  "
->
-  Save
-</button>
+<div style="display:flex; gap:12px; align-items:center; margin-top:20px;">
+	  <button
+	    id="save-climb"
+    style="
+      font-size:18px;
+      padding:7px 14px;
+      font-family:sans-serif;
+      cursor:pointer;
+    "
+	  >
+	    Save My Log
+	  </button>
+
+		  <button
+		    id="delete-log"
+    style="
+      font-size:18px;
+      padding:7px 14px;
+      font-family:sans-serif;
+      cursor:pointer;
+    "
+  >
+    Delete My Log
+  </button>
+</div>
 
 <div style="font-family:sans-serif; margin-top:25px;">
-  <h2>Saved Climbs</h2>
+  <h2 style="margin-bottom:18px;">Logged Climbs</h2>
+  <div class="tag-tools">
+    <label for="climb-type-filter" style="font-size:18px;">Show:</label>
+    <select id="climb-type-filter">
+      <option value="">All types</option>
+      <option value="Boulder">Boulder</option>
+      <option value="Sport Route">Sport Route</option>
+      <option value="Trad Route">Trad Route</option>
+      <option value="Multi Pitch Route">Multi Pitch Route</option>
+      <option value="Free Solo">Free Solo</option>
+	    </select>
+    <label for="area-filter" style="font-size:18px;">Area:</label>
+    <select id="area-filter">
+      <option value="">All areas</option>
+    </select>
+    <label for="crag-filter" style="font-size:18px;">Crag/Sector:</label>
+    <select id="crag-filter">
+      <option value="">All crags/sectors</option>
+    </select>
+    <label for="wall-filter" style="font-size:18px;">Wall:</label>
+    <select id="wall-filter">
+      <option value="">All walls</option>
+    </select>
+	  </div>
   <div id="saved-climbs"></div>
 </div>
 
@@ -178,17 +583,36 @@ const supabaseClient = supabase.createClient(
   supabaseUrl,
   supabaseKey
 );
-  const svg = document.getElementById("graph");
+const svg = document.getElementById("graph");
 const points = document.querySelectorAll(".hit-area");
 const averageShape = document.getElementById("average-shape");
 const shape = document.getElementById("profile-shape");
-const output = document.getElementById("profile-output");
+const userLogStatus = document.getElementById("user-log-status");
 const climbNameInput = document.getElementById("climb-name");
 const saveClimbButton = document.getElementById("save-climb");
+const deleteLogButton = document.getElementById("delete-log");
 const savedClimbsContainer = document.getElementById("saved-climbs");
+const climbTypeSelect = document.getElementById("climb-type");
+const climbTypeFilter = document.getElementById("climb-type-filter");
+const climbAreaInput = document.getElementById("climb-area");
+const climbCragInput = document.getElementById("climb-crag");
+const climbWallInput = document.getElementById("climb-wall");
+const areaFilter = document.getElementById("area-filter");
+const cragFilter = document.getElementById("crag-filter");
+const wallFilter = document.getElementById("wall-filter");
 const authStatus = document.getElementById("auth-status");
 const signUpButton = document.getElementById("sign-up");
 const signInButton = document.getElementById("sign-in");
+const sliders = {
+  top: document.getElementById("exposure-slider"),
+  left: document.getElementById("risk-slider"),
+  right: document.getElementById("consequence-slider")
+};
+const sliderValues = {
+  top: document.getElementById("exposure-value"),
+  left: document.getElementById("risk-value"),
+  right: document.getElementById("consequence-value")
+};
 
 const center = { x: 450, y: 450 };
 
@@ -201,6 +625,8 @@ const axes = {
 let isDragging = false;
 let dragAxis = null;
 let activePointerId = null;
+let selectedClimb = null;
+let allClimbs = [];
 
 signInButton.addEventListener("click", async () => {
   const email = document.getElementById("email").value;
@@ -234,15 +660,24 @@ points.forEach(point => {
   });
 });
 
+Object.keys(sliders).forEach(axisName => {
+  sliders[axisName].addEventListener("input", event => {
+    sliderValues[axisName].textContent = event.target.value;
+
+    const point = getPointFromSliderValue(
+      axisName,
+      Number(event.target.value)
+    );
+
+    movePoint(axisName, point.x, point.y);
+    updateShape();
+  });
+});
+
 svg.addEventListener("pointermove", event => {
   if (!isDragging || event.pointerId !== activePointerId) return;
 
-  const rect = svg.getBoundingClientRect();
-
-  const mouse = {
-    x: event.clientX - rect.left,
-    y: event.clientY - rect.top
-  };
+  const mouse = getSvgPoint(event);
 
   const projected = projectPointOntoAxis(
     mouse,
@@ -251,6 +686,7 @@ svg.addEventListener("pointermove", event => {
   );
 
   movePoint(dragAxis, projected.x, projected.y);
+  updateSliderFromPoint(dragAxis);
   updateShape();
 });
 
@@ -290,13 +726,17 @@ saveClimbButton.addEventListener("click", async () => {
     .upsert(
       {
         name: climbName,
-        created_by: userData.user.id
+        created_by: userData.user.id,
+        climb_type: climbTypeSelect.value,
+        area: climbAreaInput.value.trim(),
+        crag: climbCragInput.value.trim(),
+        wall: climbWallInput.value.trim()
       },
       {
         onConflict: "name"
       }
     )
-    .select()
+    .select("id, name, climb_type, area, crag, wall")
     .single();
 
   if (climbError) {
@@ -318,15 +758,72 @@ saveClimbButton.addEventListener("click", async () => {
   if (error) {
     alert(error.message);
   } else {
+    selectedClimb = climb;
+    selectedClimbText.textContent =
+      "Climb name: " + climb.name;
+    updateLocationFilterOptions();
+    userLogStatus.textContent = "";
     alert("Climb and graph saved.");
     loadClimbsFromSupabase();
   }
 });
 
+deleteLogButton.addEventListener("click", async () => {
+  if (!selectedClimb) {
+    alert("Please select a climb first.");
+    return;
+  }
+
+  const { data: userData, error: userError } =
+    await supabaseClient.auth.getUser();
+
+  if (userError || !userData.user) {
+    alert("Please sign in before deleting a log.");
+    return;
+  }
+
+  const shouldDelete = confirm(
+    "Delete your saved log for " + selectedClimb.name + "?"
+  );
+
+  if (!shouldDelete) return;
+
+  const { error } = await supabaseClient
+    .from("climb_graphs")
+    .delete()
+    .eq("climb_id", selectedClimb.id)
+    .eq("user_id", userData.user.id);
+
+  if (error) {
+    alert(error.message);
+    return;
+  }
+
+  alert("Your log was deleted.");
+  loadAverageForClimb(selectedClimb);
+  updateUserLogStatus(selectedClimb);
+});
+
+climbTypeFilter.addEventListener("change", () => {
+  renderClimbList();
+});
+
+areaFilter.addEventListener("change", () => {
+  renderClimbList();
+});
+
+cragFilter.addEventListener("change", () => {
+  renderClimbList();
+});
+
+wallFilter.addEventListener("change", () => {
+  renderClimbList();
+});
+
 async function loadClimbsFromSupabase() {
   const { data, error } = await supabaseClient
     .from("climbs")
-    .select("id, name")
+    .select("id, name, climb_type, area, crag, wall")
     .order("name");
 
   if (error) {
@@ -334,55 +831,196 @@ async function loadClimbsFromSupabase() {
     return;
   }
 
-  savedClimbsContainer.innerHTML = "";
-
-  data.forEach(climb => {
-    const climbButton = document.createElement("button");
-
-    climbButton.textContent = climb.name;
-    climbButton.style.fontSize = "20px";
-    climbButton.style.padding = "8px 12px";
-    climbButton.style.margin = "8px";
-    climbButton.style.cursor = "pointer";
-
-    climbButton.addEventListener("click", async () => {
-      selectedClimbText.textContent =
-        "Climb name: " + climb.name;
-
-      const { data, error } = await supabaseClient
-        .from("climb_graphs")
-        .select("top, left_point, right_point")
-        .eq("climb_id", climb.id);
-
-      if (error) {
-        alert(error.message);
-        return;
-      }
-
-      if (!data || data.length === 0) {
-        alert("No graphs saved for this climb yet.");
-        return;
-      }
-
-      const avgTop = averagePoints(
-        data.map(row => row.top)
-      );
-
-      const avgLeft = averagePoints(
-        data.map(row => row.left_point)
-      );
-
-      const avgRight = averagePoints(
-        data.map(row => row.right_point)
-      );
-
-      drawAverageShape(avgTop, avgLeft, avgRight);
-    });
-
-    savedClimbsContainer.appendChild(climbButton);
-  });
+  allClimbs = data;
+  updateLocationFilterOptions();
+  renderClimbList();
 }
 
+function renderClimbList() {
+  const activeClimbType = climbTypeFilter.value;
+  const activeArea = areaFilter.value;
+  const activeCrag = cragFilter.value;
+  const activeWall = wallFilter.value;
+  const climbsToShow = allClimbs.filter(climb => {
+    const details = getDetailsForClimb(climb);
+
+    if (activeClimbType !== "" && details.climbType !== activeClimbType) return false;
+    if (activeArea !== "" && details.area !== activeArea) return false;
+    if (activeCrag !== "" && details.crag !== activeCrag) return false;
+    if (activeWall !== "" && details.wall !== activeWall) return false;
+
+    return true;
+  });
+
+  savedClimbsContainer.innerHTML = "";
+
+  if (climbsToShow.length === 0) {
+    savedClimbsContainer.textContent = "No logged climbs match these filters.";
+    return;
+  }
+
+  const list = document.createElement("ul");
+  list.className = "climb-list";
+
+  climbsToShow.forEach(climb => {
+    const item = document.createElement("li");
+    item.className = "climb-item";
+
+    if (selectedClimb && selectedClimb.id === climb.id) {
+      item.classList.add("selected");
+    }
+
+    const name = document.createElement("span");
+    name.className = "climb-name";
+    name.textContent = climb.name;
+
+    const tagList = document.createElement("span");
+    tagList.className = "tag-list";
+
+    const details = getDetailsForClimb(climb);
+    const tags = [
+      details.climbType,
+      details.area,
+      details.crag,
+      details.wall
+    ].filter(value => value !== "");
+
+    tags.forEach(tag => {
+      const tagElement = document.createElement("span");
+      tagElement.className = "tag";
+      tagElement.textContent = tag;
+      tagList.appendChild(tagElement);
+    });
+
+    item.appendChild(name);
+    item.appendChild(tagList);
+
+    item.addEventListener("click", async () => {
+      selectedClimb = climb;
+      selectedClimbText.textContent =
+        "Climb name: " + climb.name;
+      climbNameInput.value = climb.name;
+      setDetailInputsForClimb(climb);
+      renderClimbList();
+      loadAverageForClimb(climb);
+      updateUserLogStatus(climb);
+    });
+
+    list.appendChild(item);
+  });
+
+  savedClimbsContainer.appendChild(list);
+}
+
+function getDetailsForClimb(climb) {
+  return {
+    climbType: climb.climb_type || "",
+    area: climb.area || "",
+    crag: climb.crag || "",
+    wall: climb.wall || ""
+  };
+}
+
+function setDetailInputsForClimb(climb) {
+  const details = getDetailsForClimb(climb);
+
+  climbTypeSelect.value = details.climbType;
+  climbAreaInput.value = details.area;
+  climbCragInput.value = details.crag;
+  climbWallInput.value = details.wall;
+}
+
+function updateLocationFilterOptions() {
+  updateFilterOptions(areaFilter, "All areas", "area");
+  updateFilterOptions(cragFilter, "All crags/sectors", "crag");
+  updateFilterOptions(wallFilter, "All walls", "wall");
+}
+
+function updateFilterOptions(filterElement, defaultLabel, detailKey) {
+  const currentValue = filterElement.value;
+  const values = new Set();
+
+  allClimbs.forEach(climb => {
+    const value = getDetailsForClimb(climb)[detailKey];
+    if (value !== "") values.add(value);
+  });
+
+  filterElement.innerHTML = "";
+
+  const defaultOption = document.createElement("option");
+  defaultOption.value = "";
+  defaultOption.textContent = defaultLabel;
+  filterElement.appendChild(defaultOption);
+
+  Array.from(values).sort().forEach(value => {
+    const option = document.createElement("option");
+    option.value = value;
+    option.textContent = value;
+    filterElement.appendChild(option);
+  });
+
+  filterElement.value = values.has(currentValue) ? currentValue : "";
+}
+
+async function updateUserLogStatus(climb) {
+  userLogStatus.textContent = "";
+
+  const { data: userData, error: userError } =
+    await supabaseClient.auth.getUser();
+
+  if (userError || !userData.user) return;
+
+  const { data, error } = await supabaseClient
+    .from("climb_graphs")
+    .select("id")
+    .eq("climb_id", climb.id)
+    .eq("user_id", userData.user.id)
+    .limit(1);
+
+  if (error) {
+    alert(error.message);
+    return;
+  }
+
+  if (!data || data.length === 0) {
+    userLogStatus.textContent =
+      "(No recorded log for this climb)";
+  }
+}
+
+async function loadAverageForClimb(climb) {
+  const { data, error } = await supabaseClient
+    .from("climb_graphs")
+    .select("top, left_point, right_point")
+    .eq("climb_id", climb.id);
+
+  if (error) {
+    alert(error.message);
+    return;
+  }
+
+  if (!data || data.length === 0) {
+    averageShape.removeAttribute("d");
+    alert("No graphs saved for this climb yet.");
+    return;
+  }
+
+  const avgTop = averagePoints(
+    data.map(row => row.top)
+  );
+
+  const avgLeft = averagePoints(
+    data.map(row => row.left_point)
+  );
+
+  const avgRight = averagePoints(
+    data.map(row => row.right_point)
+  );
+
+  drawAverageShape(avgTop, avgLeft, avgRight);
+}
+
+syncSlidersFromPoints();
 updateShape();
 loadClimbsFromSupabase();
 
@@ -402,6 +1040,29 @@ function movePoint(axisName, x, y) {
   visiblePoint.setAttribute("cy", y);
 }
 
+function updateSliderFromPoint(axisName) {
+  const value = Math.round(getAxisRatio(getPoint(axisName), axes[axisName]) * 100);
+
+  sliders[axisName].value = value;
+  sliderValues[axisName].textContent = value;
+}
+
+function syncSlidersFromPoints() {
+  Object.keys(sliders).forEach(axisName => {
+    updateSliderFromPoint(axisName);
+  });
+}
+
+function getPointFromSliderValue(axisName, value) {
+  const ratio = value / 100;
+  const axisEnd = axes[axisName];
+
+  return {
+    x: center.x + (axisEnd.x - center.x) * ratio,
+    y: center.y + (axisEnd.y - center.y) * ratio
+  };
+}
+
 function updateShape() {
   const top = getPoint("top");
   const left = getPoint("left");
@@ -416,54 +1077,6 @@ function updateShape() {
   `;
 
   shape.setAttribute("d", d);
-
-  const exposure = getAxisLevel(top, axes.top);
-  const risk = getAxisLevel(left, axes.left);
-  const consequence = getAxisLevel(right, axes.right);
-
-  const profileKey =
-    `${exposure}-${risk}-${consequence}`;
-
-  const profiles = {
-    "low-low-low": "Low Intensity",
-    "low-low-medium": "Controlled Practice",
-    "low-low-high": "Hidden Consequence",
-
-    "low-medium-low": "Casual Lead",
-    "low-medium-medium": "Balanced Climbing",
-    "low-medium-high": "Serious Fall Potential",
-
-    "low-high-low": "Technical Risk",
-    "low-high-medium": "Highball",
-    "low-high-high": "Danger Zone",
-
-    "medium-low-low": "Comfortable Exposure",
-    "medium-low-medium": "Exposed But Safe",
-    "medium-low-high": "Free Solo",
-
-    "medium-medium-low": "Sport Climbing",
-    "medium-medium-medium": "All-Around Climbing",
-    "medium-medium-high": "Committed Climbing",
-
-    "medium-high-low": "Risky Movement",
-    "medium-high-medium": "Bold Climbing",
-    "medium-high-high": "Extreme Commitment",
-
-    "high-low-low": "Airy But Safe",
-    "high-low-medium": "Exposed Movement",
-    "high-low-high": "No-Fall Zone",
-
-    "high-medium-low": "Lead Climbing",
-    "high-medium-medium": "Exposed Lead",
-    "high-medium-high": "Big Wall",
-
-    "high-high-low": "Unstable Movement",
-    "high-high-medium": "Serious Risk",
-    "high-high-high": "Maximum Fear"
-  };
-
-  output.textContent =
-    `Profile: ${profiles[profileKey]}`;
 }
 
 function getPoint(axisName) {
@@ -477,7 +1090,7 @@ function getPoint(axisName) {
   };
 }
 
-function getAxisLevel(point, axisEnd) {
+function getAxisRatio(point, axisEnd) {
   const dxTotal = axisEnd.x - center.x;
   const dyTotal = axisEnd.y - center.y;
 
@@ -492,12 +1105,7 @@ function getAxisLevel(point, axisEnd) {
     dxPoint * dxPoint + dyPoint * dyPoint
   );
 
-  const ratio = pointDistance / totalDistance;
-
-  if (ratio < 0.33) return "low";
-  if (ratio < 0.66) return "medium";
-
-  return "high";
+  return pointDistance / totalDistance;
 }
 
 function drawAverageShape(top, left, right) {
@@ -546,81 +1154,14 @@ function projectPointOntoAxis(mouse, start, end) {
     y: start.y + t * dy
   };
 }
+
+function getSvgPoint(event) {
+  const point = svg.createSVGPoint();
+  point.x = event.clientX;
+  point.y = event.clientY;
+
+  return point.matrixTransform(svg.getScreenCTM().inverse());
+}
 </script>
-
-<div style="
-  position:absolute;
-  top:180px;
-  left:800px;
-  width:540px;
-  padding:20px;
-  padding-right: 25px;
-  border:2px solid black;
-  background:#f8f8f8;
-  font-family:sans-serif;
-">
-  <h2>Definitions</h2>
-  <h3>Exposure</h3>
-  <ul>
-    <li>How exposed you are to a bad/long fall</li>
-    <li>Lots of air beneath you means you are exposed, or rock features like ledges, aretes, flakes and slabs</li>
-  </ul>
-
-  <h3>Risk</h3>
-  <ul>
-    <li>A complex and often subjective calculation of how likely a fall would be</li>
-    <li>Can depend on the skill of the climber, can be an intrinsic quality of a movement</li>
-  </ul>
-
-  <h3>Consequence</h3>
-  <ul>
-    <li>The result of a fall</li>
-    <li>Ranges from no consequence, to injury, to death at its most extreme</li>
-  </ul>
-</div>
-
- <div style="
-  position:absolute;
-  top:620px;
-  left:800px;
-  width:220px;
-  padding:15px;
-  border:2px solid black;
-  background:#f8f8f8;
-  font-family:sans-serif;
-">
-
-<h3>Legend</h3>
-
-<div style="display:flex; align-items:center; gap:10px; margin-bottom:10px;">
-  <svg width="60" height="20">
-    <line
-      x1="0"
-      y1="10"
-      x2="60"
-      y2="10"
-      stroke="gray"
-      stroke-width="3"
-      stroke-dasharray="6 6"
-    />
-  </svg>
-  <span>Community Average</span>
-</div>
-
-<div style="display:flex; align-items:center; gap:10px;">
-  <svg width="60" height="20">
-    <line
-      x1="0"
-      y1="10"
-      x2="60"
-      y2="10"
-      stroke="black"
-      stroke-width="3"
-    />
-  </svg>
-  <span>Your Graph</span>
-</div>
-
-</div>
 </body>
 </html>
