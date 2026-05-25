@@ -37,42 +37,16 @@
 <h1>Interactive Fear Matrix</h1>
 
 <div style="font-family:sans-serif; margin-bottom:20px;">
-  <input
-    id="email"
-    type="email"
-    placeholder="Email"
-    style="font-size:18px; padding:6px; width:220px;"
-  />
+  <input id="email" type="email" placeholder="Email" style="font-size:18px; padding:6px; width:220px;" />
+  <input id="password" type="password" placeholder="Password" style="font-size:18px; padding:6px; width:220px; margin-left:10px;" />
 
-  <input
-    id="password"
-    type="password"
-    placeholder="Password"
-    style="font-size:18px; padding:6px; width:220px; margin-left:10px;"
-  />
-
-  <button
-    id="sign-up"
-    style="font-size:18px; padding:6px 12px; margin-left:10px;"
-  >
-    Sign Up
-  </button>
-
-  <button
-    id="sign-in"
-    style="font-size:18px; padding:6px 12px; margin-left:10px;"
-  >
-    Sign In
-  </button>
+  <button id="sign-up" style="font-size:18px; padding:6px 12px; margin-left:10px;">Sign Up</button>
+  <button id="sign-in" style="font-size:18px; padding:6px 12px; margin-left:10px;">Sign In</button>
 </div>
 
-<div id="auth-status" style="font-family:sans-serif; font-size:18px; margin-top:10px;">
-  Not signed in
-</div>
+<div id="auth-status" style="font-family:sans-serif; font-size:18px; margin-top:10px;">Not signed in</div>
 
-<div id="selected-climb" style="font-family:sans-serif; font-size:32px; margin-bottom:15px; font-weight:bold;">
-  Climb name: None Selected
-</div>
+<div id="selected-climb" style="font-family:sans-serif; font-size:32px; margin-bottom:15px; font-weight:bold;">Climb name: None Selected</div>
 
 <svg id="graph" width="1000" height="700" style="background:white;">
   <polygon points="450,90 138,630 762,630" fill="lightyellow" stroke="black" stroke-width="2" />
@@ -80,10 +54,6 @@
   <text x="450" y="70" text-anchor="middle" font-size="28">Exposure</text>
   <text x="90" y="675" font-size="28">Risk</text>
   <text x="700" y="675" font-size="28">Consequence</text>
-
-  <line x1="450" y1="450" x2="450" y2="90" stroke="black" stroke-width="2" />
-  <line x1="450" y1="450" x2="138" y2="630" stroke="black" stroke-width="2" />
-  <line x1="450" y1="450" x2="762" y2="630" stroke="black" stroke-width="2" />
 
   <path id="average-shape" fill="rgba(120, 120, 120, 0.25)" stroke="gray" stroke-width="2" stroke-dasharray="6 6" pointer-events="none"/>
   <path id="profile-shape" fill="rgba(249, 250, 242, 0.75)" stroke="black" stroke-width="1.5"/>
@@ -110,18 +80,14 @@
   <input type="range" id="consequence-slider" min="0" max="100" value="50" style="width: 300px;"/>
 </div>
 
-<div id="profile-output" style="margin-top:20px; font-size:32px; font-family:sans-serif; font-weight:bold;">
-  Profile:
-</div>
+<div id="profile-output" style="margin-top:20px; font-size:32px; font-family:sans-serif; font-weight:bold;">Profile:</div>
 
 <div style="font-family:sans-serif; font-size:24px; margin-top:20px;">
   <label for="climb-name">Add a new climb:</label>
   <input id="climb-name" type="text" style="font-size:22px; padding:6px; margin-left:10px; width:300px;"/>
 </div>
   
-<button id="save-climb" style="margin-top:20px; font-size:24px; padding:10px 20px; font-family:sans-serif; cursor:pointer;">
-  Save
-</button>
+<button id="save-climb" style="margin-top:20px; font-size:24px; padding:10px 20px; font-family:sans-serif; cursor:pointer;">Save</button>
 
 <div style="font-family:sans-serif; margin-top:25px;">
   <h2>Saved Climbs</h2>
@@ -473,7 +439,11 @@ function projectPointOntoAxis(mouse, start, end) {
 
   const lengthSquared = dx * dx + dy * dy;
 
-  let t = ((mouse.x - start.x) *
+  let t = ((mouse.x - start.x) * dx + (mouse.y - start.y) * dy) / lengthSquared;
+  t = Math.max(0, Math.min(1, t));
+
+  return {
+    x: start.x + t * dx,
     y: start.y + t * dy
   };
 }
@@ -559,5 +529,3 @@ updateGraphFromSliders();
 </div>
 </body>
 </html>
-
-           
