@@ -581,7 +581,15 @@ const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZS
 
 const supabaseClient = supabase.createClient(
   supabaseUrl,
-  supabaseKey
+  supabaseKey,
+  {
+    auth: {
+      persistSession: true,
+      autoRefreshToken: true,
+      detectSessionInUrl: true,
+      storage: window.localStorage
+    }
+  }
 );
 const svg = document.getElementById("graph");
 const points = document.querySelectorAll(".hit-area");
@@ -628,6 +636,12 @@ let activePointerId = null;
 let selectedClimb = null;
 let allClimbs = [];
 
+initializeAuthStatus();
+
+supabaseClient.auth.onAuthStateChange((_event, session) => {
+  updateAuthStatus(session);
+});
+
 signInButton.addEventListener("click", async () => {
   const email = document.getElementById("email").value;
   const password = document.getElementById("password").value;
@@ -640,7 +654,6 @@ signInButton.addEventListener("click", async () => {
   if (error) {
     alert(error.message);
   } else {
-    authStatus.textContent = "Signed in as " + email;
     alert("Signed in.");
   }
 });
@@ -1023,6 +1036,26 @@ async function loadAverageForClimb(climb) {
 syncSlidersFromPoints();
 updateShape();
 loadClimbsFromSupabase();
+
+async function initializeAuthStatus() {
+  const { data, error } = await supabaseClient.auth.getSession();
+
+  if (error) {
+    authStatus.textContent = "Not signed in";
+    return;
+  }
+
+  updateAuthStatus(data.session);
+}
+
+function updateAuthStatus(session) {
+  if (session && session.user) {
+    authStatus.textContent =
+      "Signed in as " + session.user.email;
+  } else {
+    authStatus.textContent = "Not signed in";
+  }
+}
 
 function movePoint(axisName, x, y) {
   const hitArea = document.querySelector(
