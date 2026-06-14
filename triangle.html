@@ -657,7 +657,32 @@ signInButton.addEventListener("click", async () => {
     alert("Signed in.");
   }
 });
+	
+signUpButton.addEventListener("click", async () => {
+  const email = document.getElementById("email").value.trim();
+  const password = document.getElementById("password").value;
 
+  if (email === "" || password === "") {
+    alert("Please enter an email and password.");
+    return;
+  }
+
+  const { data, error } = await supabaseClient.auth.signUp({
+    email,
+    password
+  });
+
+  if (error) {
+    alert(error.message);
+    return;
+  }
+
+  if (data.session) {
+    alert("Account created and signed in.");
+  } else {
+    alert("Account created. Please check your email to confirm your account.");
+  }
+});
 points.forEach(point => {
   const axisName = point.dataset.axis;
 
