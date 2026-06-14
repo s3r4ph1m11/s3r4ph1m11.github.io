@@ -250,20 +250,31 @@ input[type="range"]::-moz-range-thumb {
 }
 
 .climb-list {
-  max-width: 760px;
+  max-width: 1180px;
   margin: 0;
   padding: 0;
   list-style: none;
   border-top: 1px solid black;
 }
 
+.climb-list-header,
 .climb-item {
-  display: flex;
+  display: grid;
+  grid-template-columns: 1.5fr 1fr 1fr 1fr 1fr;
   align-items: center;
-  justify-content: space-between;
   gap: 16px;
   padding: 10px 0;
   border-bottom: 1px solid black;
+}
+
+.climb-list-header {
+  font-size: 14px;
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.climb-item {
   cursor: pointer;
 }
 
@@ -277,19 +288,8 @@ input[type="range"]::-moz-range-thumb {
   font-weight: bold;
 }
 
-.tag-list {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: flex-end;
-  gap: 6px;
-}
-
-.tag {
-  padding: 3px 8px;
-  border: 1px solid black;
-  border-radius: 12px;
-  background: lightyellow;
-  font-size: 14px;
+.climb-column {
+  font-size: 16px;
 }
 
 </style>
@@ -875,6 +875,15 @@ function renderClimbList() {
   const list = document.createElement("ul");
   list.className = "climb-list";
 
+  const header = document.createElement("li");
+  header.className = "climb-list-header";
+  ["Climb", "Type", "Area", "Crag/Sector", "Wall"].forEach(label => {
+    const column = document.createElement("span");
+    column.textContent = label;
+    header.appendChild(column);
+  });
+  list.appendChild(header);
+
   climbsToShow.forEach(climb => {
     const item = document.createElement("li");
     item.className = "climb-item";
@@ -887,26 +896,22 @@ function renderClimbList() {
     name.className = "climb-name";
     name.textContent = climb.name;
 
-    const tagList = document.createElement("span");
-    tagList.className = "tag-list";
-
     const details = getDetailsForClimb(climb);
-    const tags = [
+    const columns = [
       details.climbType,
       details.area,
       details.crag,
       details.wall
-    ].filter(value => value !== "");
-
-    tags.forEach(tag => {
-      const tagElement = document.createElement("span");
-      tagElement.className = "tag";
-      tagElement.textContent = tag;
-      tagList.appendChild(tagElement);
-    });
+    ];
 
     item.appendChild(name);
-    item.appendChild(tagList);
+
+    columns.forEach(value => {
+      const column = document.createElement("span");
+      column.className = "climb-column";
+      column.textContent = value || "-";
+      item.appendChild(column);
+    });
 
     item.addEventListener("click", async () => {
       selectedClimb = climb;
