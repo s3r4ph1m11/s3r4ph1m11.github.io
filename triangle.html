@@ -318,13 +318,21 @@ input[type="range"]::-moz-range-thumb {
     Sign Up
   </button>
 
-  <button
-    id="sign-in"
-    style="font-size:18px; padding:6px 12px; margin-left:10px;"
-  >
-    Sign In
-  </button>
-</div>
+	  <button
+	    id="sign-in"
+	    style="font-size:18px; padding:6px 12px; margin-left:10px;"
+	  >
+	    Sign In
+	  </button>
+
+  <div
+    class="cf-turnstile"
+    data-sitekey="0x4AAAAAADkojkFKBKbOIz4q"
+    data-callback="onTurnstileSuccess"
+    data-expired-callback="onTurnstileExpired"
+    style="margin-top:12px;"
+  ></div>
+	</div>
   <div
   id="auth-status"
   style="font-family:sans-serif; font-size:18px; margin-top:10px; margin-bottom:25px;"
@@ -572,6 +580,7 @@ input[type="range"]::-moz-range-thumb {
   <div id="saved-climbs"></div>
 </div>
 
+<script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
 const selectedClimbText = document.getElementById("selected-climb");
@@ -635,6 +644,15 @@ let dragAxis = null;
 let activePointerId = null;
 let selectedClimb = null;
 let allClimbs = [];
+let turnstileToken = "";
+
+window.onTurnstileSuccess = token => {
+  turnstileToken = token;
+};
+
+window.onTurnstileExpired = () => {
+  turnstileToken = "";
+};
 
 initializeAuthStatus();
 
@@ -642,9 +660,53 @@ supabaseClient.auth.onAuthStateChange((_event, session) => {
   updateAuthStatus(session);
 });
 
-signInButton.addEventListener("click", async () => {
-  const email = document.getElementById("email").value;
+signUpButton.addEventListener("click", async () => {
+  const email = document.getElementById("email").value.trim();
   const password = document.getElementById("password").value;
+
+  if (email === "" || password === "") {
+    alert("Please enter an email and password.");
+    return;
+  }
+
+  if (turnstileToken === "") {
+    alert("Please complete the CAPTCHA.");
+    return;
+  }
+
+  const { data, error } = await supabaseClient.auth.signUp({
+    email,
+    password,
+    options: {
+      captchaToken: turnstileToken
+    }
+  });
+
+  if (error) {
+    if (window.turnstile) {
+      turnstile.reset();
+      turnstileToken = "";
+    }
+
+    alert(error.message);
+    return;
+  }
+
+  if (data.session) {
+    alert("Account created and signed in.");
+  } else {
+    alert("Account created. Please check your email to confirm your account.");
+  }
+});
+
+signInButton.addEventListener("click", async () => {
+  const email = document.getElementById("email").value.trim();
+  const password = document.getElementById("password").value;
+
+  if (email === "" || password === "") {
+    alert("Please enter an email and password.");
+    return;
+  }
 
   const { error } = await supabaseClient.auth.signInWithPassword({
     email,
@@ -657,32 +719,7 @@ signInButton.addEventListener("click", async () => {
     alert("Signed in.");
   }
 });
-	
-signUpButton.addEventListener("click", async () => {
-  const email = document.getElementById("email").value.trim();
-  const password = document.getElementById("password").value;
 
-  if (email === "" || password === "") {
-    alert("Please enter an email and password.");
-    return;
-  }
-
-  const { data, error } = await supabaseClient.auth.signUp({
-    email,
-    password
-  });
-
-  if (error) {
-    alert(error.message);
-    return;
-  }
-
-  if (data.session) {
-    alert("Account created and signed in.");
-  } else {
-    alert("Account created. Please check your email to confirm your account.");
-  }
-});
 points.forEach(point => {
   const axisName = point.dataset.axis;
 
