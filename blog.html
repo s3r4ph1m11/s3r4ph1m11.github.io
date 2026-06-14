@@ -1,10 +1,240 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>About</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Blog</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --ink: #111111;
+      --muted: #666666;
+      --line: #dddddd;
+      font-family: "Times New Roman", Times, serif;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: #ffffff;
+      color: var(--ink);
+    }
+
+    input {
+      font: inherit;
+    }
+
+    .page {
+      margin: 0 auto;
+      max-width: 900px;
+      padding: 36px 20px 60px;
+    }
+
+    .title-section {
+      align-items: center;
+      border-bottom: 1px solid var(--line);
+      display: flex;
+      gap: 24px;
+      justify-content: space-between;
+      margin-bottom: 10px;
+      padding-bottom: 18px;
+    }
+
+    h1 {
+      font-size: 2.25rem;
+      font-weight: 400;
+      letter-spacing: 0;
+      line-height: 1.2;
+      margin: 0;
+    }
+
+    .search {
+      display: flex;
+      gap: 10px;
+      max-width: 360px;
+      width: min(360px, 45%);
+    }
+
+    #search {
+      background: transparent;
+      border: 1px solid var(--line);
+      color: var(--ink);
+      flex: 1;
+      font-size: 0.9rem;
+      min-width: 0;
+      padding: 7px 9px;
+    }
+
+    #search:focus {
+      border-color: var(--ink);
+      outline: none;
+    }
+
+    .post-list {
+      display: grid;
+    }
+
+    .post-card {
+      border-bottom: 1px solid var(--line);
+      padding: 0 0 24px;
+    }
+
+    .post-date {
+      color: var(--muted);
+      font-size: 0.86rem;
+      margin: 0 0 32px;
+    }
+
+    h2 {
+      font-size: 1.5rem;
+      font-weight: 400;
+      letter-spacing: 0;
+      line-height: 1.25;
+      margin: 0;
+    }
+
+    .post-card p {
+      color: var(--muted);
+      font-size: 1rem;
+      line-height: 1.6;
+      margin: 12px 0 0;
+    }
+
+    .post-body {
+      margin-top: 14px;
+    }
+
+    .post-body p {
+      color: var(--ink);
+      font-size: 1rem;
+      line-height: 1.65;
+    }
+
+    .empty-state {
+      color: var(--muted);
+      display: none;
+      padding: 18px 0;
+    }
+
+    .empty-state.is-visible {
+      display: block;
+    }
+    @media (max-width: 560px) {
+      .page {
+        padding: 40px 18px 58px;
+      }
+
+      .search {
+        width: 100%;
+      }
+
+      .title-section {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 16px;
+      }
+    }
+  </style>
 </head>
 <body>
-  <h1>Blog</h1>
-  <p>Hello!</p>
+  <main class="page">
+    <section class="title-section" data-home-section>
+      <h1>Blog</h1>
+      <div class="search" aria-label="Search posts">
+        <input id="search" type="search" placeholder="Search posts" autocomplete="off">
+      </div>
+    </section>
+
+    <section data-home-section>
+      <div class="post-list" id="postList" aria-live="polite"></div>
+      <div class="empty-state" id="emptyState">No posts match that search.</div>
+    </section>
+  </main>
+
+  <script>
+    const posts = [
+      {
+        id: "test-post",
+        title: "Test Blog Post",
+        date: "June 13, 2026",
+        excerpt: "A simple test post to confirm new entries show up on the page.",
+        body: [
+          "This is a test blog post. If you can read this paragraph in the preview, the blog is rendering posts from the page data correctly.",
+          "You can replace this text later with a real post."
+        ]
+      },
+      {
+        id: "making-room",
+        title: "Making Room for Better Drafts",
+        date: "June 12, 2026",
+        excerpt: "A few practical ways to turn a messy idea into something you can return to tomorrow.",
+        body: [
+          "The easiest draft to keep working on is the one that leaves a trail. I like to end a writing session by naming the question I was trying to answer, even if the answer is still blurry.",
+          "That small note creates a doorway back in. Instead of reopening a document and facing a wall of unfinished thinking, you get a simple invitation: start here.",
+          "A good blog can hold that kind of work beautifully. It does not have to be polished to be useful; it just needs enough shape that future-you can find the thread again."
+        ]
+      },
+      {
+        id: "designing-home",
+        title: "Designing a Home for Small Ideas",
+        date: "June 8, 2026",
+        excerpt: "Why a blog layout should make reading feel effortless before it tries to look impressive.",
+        body: [
+          "The strongest blog designs usually feel quiet at first. They give the writing room, make the next action obvious, and avoid turning every paragraph into a performance.",
+          "A homepage needs enough structure to invite browsing: titles, dates, excerpts, and a clear way to open the full post. Search matters too, because old ideas become more valuable when they are easy to find.",
+          "Visual polish is not decoration here. It is a way of reducing friction so the reader can stay with the thought."
+        ]
+      },
+      {
+        id: "launch-notes",
+        title: "Launch Notes for a Tiny Website",
+        date: "June 1, 2026",
+        excerpt: "The small checklist I use before sharing a new personal site with other people.",
+        body: [
+          "Before sharing a small website, I check the basics: readable type, useful titles, mobile layout, working links, and a page that still makes sense when skimmed.",
+          "The best launch version is rarely the biggest version. It is the version with a clear purpose and a few complete paths through it.",
+          "Once the foundation works, everything else gets easier to add: categories, a newsletter, comments, images, or a richer post archive."
+        ]
+      }
+    ];
+
+    const postList = document.querySelector("#postList");
+    const searchInput = document.querySelector("#search");
+    const emptyState = document.querySelector("#emptyState");
+
+    function postCard(post) {
+      return `
+        <article class="post-card">
+          <p class="post-date">${post.date}</p>
+          <h2>${post.title}</h2>
+          <div class="post-body">
+            ${post.body.map(paragraph => `<p>${paragraph}</p>`).join("")}
+          </div>
+        </article>
+      `;
+    }
+
+    function renderPosts(items) {
+      postList.innerHTML = items.map(postCard).join("");
+      emptyState.classList.toggle("is-visible", items.length === 0);
+    }
+
+    function filterPosts() {
+      const query = searchInput.value.trim().toLowerCase();
+      const filtered = posts.filter(post => {
+        const searchable = `${post.title} ${post.date} ${post.excerpt} ${post.body.join(" ")}`.toLowerCase();
+        return searchable.includes(query);
+      });
+      renderPosts(filtered);
+    }
+
+    searchInput.addEventListener("input", filterPosts);
+
+    renderPosts(posts);
+  </script>
 </body>
 </html>
