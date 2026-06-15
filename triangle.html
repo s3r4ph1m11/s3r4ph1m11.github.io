@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html>
-<body style="margin:0; padding:20px; background:#ffffff;">
+<body style="margin:0; padding:20px; background:#ffffff; min-width:1500px;">
 
 <style>
   .hit-area {
@@ -233,19 +233,33 @@ input[type="range"]::-moz-range-thumb {
   left: 100%;
 }
 
-.tag-tools {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 10px;
+.filter-grid {
+  display: grid;
+  grid-template-columns: 1.5fr 1fr 1fr 1fr 1fr;
+  align-items: end;
+  gap: 16px;
+  max-width: 1180px;
   margin-bottom: 12px;
 }
 
-.tag-tools input,
-.tag-tools select,
-.tag-tools button {
+.logged-climbs-title {
+  margin: 0;
+  font-size: 24px;
+}
+
+.filter-field label {
+  display: block;
+  margin-bottom: 4px;
+  font-size: 14px;
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.filter-field select {
+  width: 100%;
   font-family: sans-serif;
-  font-size: 18px;
+  font-size: 16px;
   padding: 6px 10px;
 }
 
@@ -290,6 +304,61 @@ input[type="range"]::-moz-range-thumb {
 
 .climb-column {
   font-size: 16px;
+}
+
+.climb-entry-row {
+  display: flex;
+  align-items: center;
+  flex-wrap: nowrap;
+  gap: 12px;
+  max-width: 1500px;
+  margin-top: 20px;
+  font-family: sans-serif;
+  font-size: 22px;
+}
+
+.climb-entry-row label {
+  flex: 0 0 auto;
+  white-space: nowrap;
+}
+
+.climb-entry-row span {
+  flex: 0 0 auto;
+  white-space: nowrap;
+}
+
+.climb-entry-row input,
+.climb-entry-row select {
+  flex: 0 0 260px;
+  min-width: 0;
+  font-size: 20px;
+  padding: 6px;
+}
+
+.climb-entry-row button {
+  flex: 0 0 145px;
+  font-size: 18px;
+  padding: 7px 14px;
+  font-family: sans-serif;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.selected-climb-row {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 15px;
+  font-family: sans-serif;
+}
+
+.selected-climb-row button {
+  flex: 0 0 145px;
+  font-size: 18px;
+  padding: 7px 14px;
+  font-family: sans-serif;
+  cursor: pointer;
+  white-space: nowrap;
 }
 
 </style>
@@ -337,19 +406,29 @@ input[type="range"]::-moz-range-thumb {
   id="auth-status"
   style="font-family:sans-serif; font-size:18px; margin-top:10px; margin-bottom:25px;"
 >
-  Not signed in
+  Not signed in. Please sign up/sign in to save/create a climb.
 </div>
 
-<div
-  id="selected-climb"
-  style="
-    font-family:sans-serif;
-    font-size:32px;
-    margin-bottom:15px;
-    font-weight:bold;
-  "
->
-  Climb name: None Selected
+<div class="selected-climb-row">
+  <div
+    id="selected-climb"
+    style="
+      font-size:32px;
+      font-weight:bold;
+    "
+  >
+    Climb name: None Selected
+  </div>
+  <button
+    id="save-climb"
+  >
+    Save My Graph
+  </button>
+  <button
+    id="delete-log"
+  >
+    Delete My Graph
+  </button>
 </div>
 
 <div class="graph-row">
@@ -481,26 +560,29 @@ input[type="range"]::-moz-range-thumb {
   </div>
 </div>
 
-  <div style="display:flex; align-items:center; gap:10px; font-family:sans-serif; font-size:24px; margin-top:20px;">
+  <div class="climb-entry-row">
   <label for="climb-name">Add a new climb:</label>
   <input
     id="climb-name"
     type="text"
-    style="font-size:22px; padding:6px; margin-left:10px; width:300px;"
   />
   <label for="climb-type">Climb Type:</label>
   <select
     id="climb-type"
-    style="font-size:22px; padding:6px; width:300px;"
-  >
-    <option value="">Choose type</option>
-    <option value="Boulder">Boulder</option>
-    <option value="Sport Route">Sport Route</option>
-    <option value="Trad Route">Trad Route</option>
-    <option value="Multi Pitch Route">Multi Pitch Route</option>
-    <option value="Free Solo">Free Solo</option>
-  </select>
-</div>
+		  >
+	    <option value="">Choose type</option>
+	    <option value="Boulder">Boulder</option>
+	    <option value="Sport Route">Sport Route</option>
+	    <option value="Trad Route">Trad Route</option>
+	    <option value="Multi Pitch Route">Multi Pitch Route</option>
+	    <option value="Free Solo">Free Solo</option>
+	  </select>
+		  <button
+		    id="add-climb"
+		  >
+	    Add Climb
+	  </button>
+			</div>
 
 <div style="display:flex; align-items:center; gap:10px; font-family:sans-serif; font-size:22px; margin-top:12px;">
   <label for="climb-area">Area:</label>
@@ -517,7 +599,7 @@ input[type="range"]::-moz-range-thumb {
     placeholder="Ex: Smoke Bluffs"
     style="font-size:20px; padding:6px; width:220px;"
   />
-  <label for="climb-wall">Wall:</label>
+  <label for="climb-wall">Wall/Boulder:</label>
   <input
     id="climb-wall"
     type="text"
@@ -525,58 +607,40 @@ input[type="range"]::-moz-range-thumb {
     style="font-size:20px; padding:6px; width:220px;"
   />
 </div>
-  
-<div style="display:flex; gap:12px; align-items:center; margin-top:20px;">
-	  <button
-	    id="save-climb"
-    style="
-      font-size:18px;
-      padding:7px 14px;
-      font-family:sans-serif;
-      cursor:pointer;
-    "
-	  >
-	    Save My Log
-	  </button>
-
-		  <button
-		    id="delete-log"
-    style="
-      font-size:18px;
-      padding:7px 14px;
-      font-family:sans-serif;
-      cursor:pointer;
-    "
-  >
-    Delete My Log
-  </button>
-</div>
 
 <div style="font-family:sans-serif; margin-top:25px;">
-  <h2 style="margin-bottom:18px;">Logged Climbs</h2>
-  <div class="tag-tools">
-    <label for="climb-type-filter" style="font-size:18px;">Show:</label>
-    <select id="climb-type-filter">
-      <option value="">All types</option>
-      <option value="Boulder">Boulder</option>
-      <option value="Sport Route">Sport Route</option>
-      <option value="Trad Route">Trad Route</option>
-      <option value="Multi Pitch Route">Multi Pitch Route</option>
-      <option value="Free Solo">Free Solo</option>
-	    </select>
-    <label for="area-filter" style="font-size:18px;">Area:</label>
-    <select id="area-filter">
-      <option value="">All areas</option>
-    </select>
-    <label for="crag-filter" style="font-size:18px;">Crag/Sector:</label>
-    <select id="crag-filter">
-      <option value="">All crags/sectors</option>
-    </select>
-    <label for="wall-filter" style="font-size:18px;">Wall:</label>
-    <select id="wall-filter">
-      <option value="">All walls</option>
-    </select>
-	  </div>
+  <div class="filter-grid">
+    <h2 class="logged-climbs-title">Logged Climbs</h2>
+    <div class="filter-field">
+      <label for="climb-type-filter">Type</label>
+      <select id="climb-type-filter">
+        <option value="">All types</option>
+        <option value="Boulder">Boulder</option>
+        <option value="Sport Route">Sport Route</option>
+        <option value="Trad Route">Trad Route</option>
+        <option value="Multi Pitch Route">Multi Pitch Route</option>
+        <option value="Free Solo">Free Solo</option>
+      </select>
+    </div>
+    <div class="filter-field">
+      <label for="area-filter">Area</label>
+      <select id="area-filter">
+        <option value="">All areas</option>
+      </select>
+    </div>
+    <div class="filter-field">
+      <label for="crag-filter">Crag/Sector</label>
+      <select id="crag-filter">
+        <option value="">All crags/sectors</option>
+      </select>
+    </div>
+    <div class="filter-field">
+      <label for="wall-filter">Wall/Boulder</label>
+      <select id="wall-filter">
+        <option value="">All walls/boulders</option>
+      </select>
+    </div>
+  </div>
   <div id="saved-climbs"></div>
 </div>
 
@@ -606,6 +670,7 @@ const averageShape = document.getElementById("average-shape");
 const shape = document.getElementById("profile-shape");
 const userLogStatus = document.getElementById("user-log-status");
 const climbNameInput = document.getElementById("climb-name");
+const addClimbButton = document.getElementById("add-climb");
 const saveClimbButton = document.getElementById("save-climb");
 const deleteLogButton = document.getElementById("delete-log");
 const savedClimbsContainer = document.getElementById("saved-climbs");
@@ -780,7 +845,7 @@ function stopDragging() {
   document.body.style.cursor = "default";
 }
 
-saveClimbButton.addEventListener("click", async () => {
+addClimbButton.addEventListener("click", async () => {
   const climbName = climbNameInput.value.trim();
 
   if (climbName === "") {
@@ -792,7 +857,7 @@ saveClimbButton.addEventListener("click", async () => {
     await supabaseClient.auth.getUser();
 
   if (userError || !userData.user) {
-    alert("Please sign in before saving.");
+    alert("Please sign in before adding a climb.");
     return;
   }
 
@@ -819,11 +884,35 @@ saveClimbButton.addEventListener("click", async () => {
     return;
   }
 
+  selectedClimb = climb;
+  selectedClimbText.textContent =
+    "Climb name: " + climb.name;
+  updateLocationFilterOptions();
+  userLogStatus.textContent =
+    "(No recorded log for this climb)";
+  alert("Climb added. You can now save your log for it.");
+  loadClimbsFromSupabase();
+});
+
+saveClimbButton.addEventListener("click", async () => {
+  if (!selectedClimb) {
+    alert("Please add or select a climb before saving your log.");
+    return;
+  }
+
+  const { data: userData, error: userError } =
+    await supabaseClient.auth.getUser();
+
+  if (userError || !userData.user) {
+    alert("Please sign in before saving your log.");
+    return;
+  }
+
   const { error } = await supabaseClient
     .from("climb_graphs")
     .insert({
-      climb_name: climbName,
-      climb_id: climb.id,
+      climb_name: selectedClimb.name,
+      climb_id: selectedClimb.id,
       user_id: userData.user.id,
       top: getPoint("top"),
       left_point: getPoint("left"),
@@ -833,12 +922,9 @@ saveClimbButton.addEventListener("click", async () => {
   if (error) {
     alert(error.message);
   } else {
-    selectedClimb = climb;
-    selectedClimbText.textContent =
-      "Climb name: " + climb.name;
-    updateLocationFilterOptions();
     userLogStatus.textContent = "";
-    alert("Climb and graph saved.");
+    alert("Your log was saved.");
+    loadAverageForClimb(selectedClimb);
     loadClimbsFromSupabase();
   }
 });
@@ -939,7 +1025,7 @@ function renderClimbList() {
 
   const header = document.createElement("li");
   header.className = "climb-list-header";
-  ["Climb", "Type", "Area", "Crag/Sector", "Wall"].forEach(label => {
+  ["Climb", "Type", "Area", "Crag/Sector", "Wall/Boulder"].forEach(label => {
     const column = document.createElement("span");
     column.textContent = label;
     header.appendChild(column);
@@ -1013,7 +1099,7 @@ function setDetailInputsForClimb(climb) {
 function updateLocationFilterOptions() {
   updateFilterOptions(areaFilter, "All areas", "area");
   updateFilterOptions(cragFilter, "All crags/sectors", "crag");
-  updateFilterOptions(wallFilter, "All walls", "wall");
+  updateFilterOptions(wallFilter, "All walls/boulders", "wall");
 }
 
 function updateFilterOptions(filterElement, defaultLabel, detailKey) {
@@ -1108,7 +1194,7 @@ async function initializeAuthStatus() {
   const { data, error } = await supabaseClient.auth.getSession();
 
   if (error) {
-    authStatus.textContent = "Not signed in";
+    authStatus.textContent = "Not signed in. Please sign up/sign in to save/create a climb.";
     return;
   }
 
@@ -1120,7 +1206,7 @@ function updateAuthStatus(session) {
     authStatus.textContent =
       "Signed in as " + session.user.email;
   } else {
-    authStatus.textContent = "Not signed in";
+    authStatus.textContent = "Not signed in. Please sign up/sign in to save/create a climb.";
   }
 }
 
