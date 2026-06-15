@@ -83,17 +83,20 @@ input[type="range"] {
   -webkit-appearance: none;
   appearance: none;
   accent-color: black;
-  height: 28px;
+  height: 34px;
   background: transparent;
   width: 100%;
 }
 
 input[type="range"]::-webkit-slider-runnable-track {
-  height: 12px;
-  border: 2px solid black;
+  height: 18px;
+  border: 0;
   background:
     linear-gradient(
       to right,
+      black 0,
+      black 2px,
+      transparent 2px,
       transparent 24.8%,
       black 24.8%,
       black 25.2%,
@@ -105,18 +108,30 @@ input[type="range"]::-webkit-slider-runnable-track {
       transparent 74.8%,
       black 74.8%,
       black 75.2%,
-      transparent 75.2%
+      transparent 75.2%,
+      transparent calc(100% - 2px),
+      black calc(100% - 2px),
+      black 100%
     ),
-    white;
+    linear-gradient(
+      to bottom,
+      transparent 8px,
+      black 8px,
+      black 10px,
+      transparent 10px
+    );
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: calc(100% - 16px) 18px, calc(100% - 16px) 18px;
 }
 
 input[type="range"]::-webkit-slider-thumb {
   -webkit-appearance: none;
-  width: 8px;
-  height: 18px;
-  margin-top: -5px;
-  border: 2px solid black;
-  border-radius: 2px;
+  width: 16px;
+  height: 16px;
+  margin-top: 1px;
+  border: 0;
+  border-radius: 50%;
   background: var(--slider-color);
   cursor: grab;
 }
@@ -126,11 +141,14 @@ input[type="range"]::-webkit-slider-thumb:active {
 }
 
 input[type="range"]::-moz-range-track {
-  height: 12px;
-  border: 2px solid black;
+  height: 18px;
+  border: 0;
   background:
     linear-gradient(
       to right,
+      black 0,
+      black 2px,
+      transparent 2px,
       transparent 24.8%,
       black 24.8%,
       black 25.2%,
@@ -142,16 +160,28 @@ input[type="range"]::-moz-range-track {
       transparent 74.8%,
       black 74.8%,
       black 75.2%,
-      transparent 75.2%
+      transparent 75.2%,
+      transparent calc(100% - 2px),
+      black calc(100% - 2px),
+      black 100%
     ),
-    white;
+    linear-gradient(
+      to bottom,
+      transparent 8px,
+      black 8px,
+      black 10px,
+      transparent 10px
+    );
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: calc(100% - 16px) 18px, calc(100% - 16px) 18px;
 }
 
 input[type="range"]::-moz-range-thumb {
-  width: 8px;
-  height: 18px;
-  border: 2px solid black;
-  border-radius: 2px;
+  width: 16px;
+  height: 16px;
+  border: 0;
+  border-radius: 50%;
   background: var(--slider-color);
   cursor: grab;
 }
@@ -201,16 +231,17 @@ input[type="range"]::-moz-range-thumb {
   position: relative;
   min-height: 40px;
   margin-top: -2px;
-  font-size: 14px;
+  font-size: 16px;
   overflow: visible;
 }
 
 .section-labels span {
   position: absolute;
   top: 0;
-  width: 86px;
+  width: 150px;
   transform: translateX(-50%);
   text-align: center;
+  white-space: nowrap;
 }
 
 .section-labels span:nth-child(1) {
@@ -312,9 +343,16 @@ input[type="range"]::-moz-range-thumb {
   flex-wrap: nowrap;
   gap: 12px;
   max-width: 1500px;
-  margin-top: 20px;
+  margin-top: 0;
   font-family: sans-serif;
   font-size: 22px;
+}
+
+.add-climb-title {
+  margin-top: 20px;
+  margin-bottom: 10px;
+  font-size: 24px;
+  font-family: sans-serif;
 }
 
 .climb-entry-row label {
@@ -352,8 +390,33 @@ input[type="range"]::-moz-range-thumb {
   font-family: sans-serif;
 }
 
+.graph-comment-wrap {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  max-width: 1180px;
+  margin-top: 12px;
+  font-size: 22px;
+  font-family: sans-serif;
+}
+
+.graph-comment-wrap label {
+  white-space: nowrap;
+}
+
+.graph-comment-wrap input {
+  flex: 1;
+  min-width: 0;
+  font-size: 20px;
+  padding: 6px;
+}
+
+.climb-location-row {
+  margin-bottom: 48px;
+}
+
 .selected-climb-row button {
-  flex: 0 0 145px;
+  flex: 0 0 250px;
   font-size: 18px;
   padding: 7px 14px;
   font-family: sans-serif;
@@ -364,6 +427,7 @@ input[type="range"]::-moz-range-thumb {
 .individual-logs {
   max-width: 1320px;
   margin-top: 18px;
+  margin-bottom: 48px;
   font-family: sans-serif;
 }
 
@@ -373,6 +437,7 @@ input[type="range"]::-moz-range-thumb {
 
 .individual-logs table {
   width: 100%;
+  table-layout: fixed;
   border-collapse: collapse;
 }
 
@@ -390,10 +455,44 @@ input[type="range"]::-moz-range-thumb {
   letter-spacing: 0.04em;
 }
 
+.individual-logs th:nth-child(1),
+.individual-logs td:nth-child(1) {
+  width: 18%;
+}
+
+.individual-logs th:nth-child(2),
+.individual-logs td:nth-child(2),
+.individual-logs th:nth-child(3),
+.individual-logs td:nth-child(3),
+.individual-logs th:nth-child(4),
+.individual-logs td:nth-child(4) {
+  width: 9%;
+  text-align: center;
+}
+
+.individual-logs th:nth-child(5),
+.individual-logs td:nth-child(5) {
+  width: 26%;
+  padding-left: 90px;
+}
+
+.individual-logs th:nth-child(6),
+.individual-logs td:nth-child(6) {
+  width: 17%;
+  padding-left: 34px;
+}
+
+.individual-logs th:nth-child(7),
+.individual-logs td:nth-child(7) {
+  width: 9%;
+  text-align: center;
+}
+
 .individual-logs button {
   font-size: 14px;
   padding: 5px 10px;
   cursor: pointer;
+  white-space: nowrap;
 }
 
 .individual-logs-message {
@@ -461,12 +560,12 @@ input[type="range"]::-moz-range-thumb {
   <button
     id="save-climb"
   >
-    Save My Graph
+    Save My Graph for This Climb
   </button>
   <button
     id="delete-log"
   >
-    Delete My Graph
+    Delete My Graph for This Climb
   </button>
 </div>
 
@@ -499,14 +598,14 @@ input[type="range"]::-moz-range-thumb {
 />
 
   <!-- Large invisible hit areas -->
-  <circle class="hit-area" data-axis="top" cx="450" cy="390" r="55" fill="rgba(0,0,0,0.001)" />
-  <circle class="hit-area" data-axis="left" cx="398" cy="480" r="55" fill="rgba(0,0,0,0.001)" />
-  <circle class="hit-area" data-axis="right" cx="502" cy="480" r="55" fill="rgba(0,0,0,0.001)" />
+  <circle class="hit-area" data-axis="top" cx="450" cy="360" r="55" fill="rgba(0,0,0,0.001)" />
+  <circle class="hit-area" data-axis="left" cx="372" cy="495" r="55" fill="rgba(0,0,0,0.001)" />
+  <circle class="hit-area" data-axis="right" cx="528" cy="495" r="55" fill="rgba(0,0,0,0.001)" />
 
   <!-- Small visible dots -->
-  <circle class="visible-point" data-axis="top" cx="450" cy="390" r="9" fill="red" />
-  <circle class="visible-point" data-axis="left" cx="398" cy="480" r="9" fill="blue" />
-  <circle class="visible-point" data-axis="right" cx="502" cy="480" r="9" fill="green" />
+  <circle class="visible-point" data-axis="top" cx="450" cy="360" r="10" fill="red" />
+  <circle class="visible-point" data-axis="left" cx="372" cy="495" r="10" fill="blue" />
+  <circle class="visible-point" data-axis="right" cx="528" cy="495" r="10" fill="green" />
 
 </svg>
   </div>
@@ -552,18 +651,11 @@ input[type="range"]::-moz-range-thumb {
   </div>
 </div>
 
-<div class="individual-logs">
-  <h2>Individual Logs</h2>
-  <div id="individual-logs-container" class="individual-logs-message">
-    Select a climb to see individual logs.
-  </div>
-</div>
-
 <div
   id="slider-controls"
   style="
     font-family:sans-serif;
-    width:1100px;
+    width:1000px;
     margin-top:30px;
     margin-bottom:20px;
   "
@@ -571,7 +663,7 @@ input[type="range"]::-moz-range-thumb {
   <div class="slider-row">
     <label for="exposure-slider">Exposure</label>
     <div class="slider-main">
-      <input id="exposure-slider" data-axis="top" type="range" min="0" max="100" value="17" />
+      <input id="exposure-slider" data-axis="top" type="range" min="0" max="100" value="25" />
       <div class="section-labels" aria-hidden="true">
         <span>None</span>
         <span>Lowball</span>
@@ -580,13 +672,13 @@ input[type="range"]::-moz-range-thumb {
         <span>Multi Pitch</span>
       </div>
     </div>
-    <span id="exposure-value" class="slider-value">17</span>
+    <span id="exposure-value" class="slider-value">25</span>
   </div>
 
   <div class="slider-row">
     <label for="risk-slider">Risk</label>
     <div class="slider-main">
-      <input id="risk-slider" data-axis="left" type="range" min="0" max="100" value="17" />
+      <input id="risk-slider" data-axis="left" type="range" min="0" max="100" value="25" />
       <div class="section-labels" aria-hidden="true">
         <span>None</span>
         <span>Well Below Limit</span>
@@ -595,13 +687,13 @@ input[type="range"]::-moz-range-thumb {
         <span>Well Above Limit</span>
       </div>
     </div>
-    <span id="risk-value" class="slider-value">17</span>
+    <span id="risk-value" class="slider-value">25</span>
   </div>
 
   <div class="slider-row">
     <label for="consequence-slider">Consequence</label>
     <div class="slider-main">
-      <input id="consequence-slider" data-axis="right" type="range" min="0" max="100" value="17" />
+      <input id="consequence-slider" data-axis="right" type="range" min="0" max="100" value="25" />
       <div class="section-labels" aria-hidden="true">
         <span>None</span>
         <span>Airy Fall</span>
@@ -610,12 +702,21 @@ input[type="range"]::-moz-range-thumb {
         <span>Death</span>
       </div>
     </div>
-    <span id="consequence-value" class="slider-value">17</span>
+    <span id="consequence-value" class="slider-value">25</span>
   </div>
 </div>
 
-  <div class="climb-entry-row">
-  <label for="climb-name">Add a new climb:</label>
+<div class="individual-logs">
+  <h2>User Logs</h2>
+  <div id="individual-logs-container" class="individual-logs-message">
+    Select a climb to see individual logs.
+  </div>
+</div>
+
+<h2 class="add-climb-title">Add a New Climb</h2>
+
+<div class="climb-entry-row">
+  <label for="climb-name">Climb name:</label>
   <input
     id="climb-name"
     type="text"
@@ -638,7 +739,16 @@ input[type="range"]::-moz-range-thumb {
 	  </button>
 			</div>
 
-<div style="display:flex; align-items:center; gap:10px; font-family:sans-serif; font-size:22px; margin-top:12px;">
+<div class="graph-comment-wrap">
+  <label for="graph-comment">Comment:</label>
+  <input
+    id="graph-comment"
+    type="text"
+    placeholder="Optional comment"
+  />
+</div>
+
+<div class="climb-location-row" style="display:flex; align-items:center; gap:10px; font-family:sans-serif; font-size:22px; margin-top:12px;">
   <label for="climb-area">Area:</label>
   <input
     id="climb-area"
@@ -729,6 +839,7 @@ const climbNameInput = document.getElementById("climb-name");
 const addClimbButton = document.getElementById("add-climb");
 const saveClimbButton = document.getElementById("save-climb");
 const deleteLogButton = document.getElementById("delete-log");
+const graphCommentInput = document.getElementById("graph-comment");
 const savedClimbsContainer = document.getElementById("saved-climbs");
 const climbTypeSelect = document.getElementById("climb-type");
 const climbTypeFilter = document.getElementById("climb-type-filter");
@@ -975,13 +1086,15 @@ saveClimbButton.addEventListener("click", async () => {
       user_email: userData.user.email,
       top: getPoint("top"),
       left_point: getPoint("left"),
-      right_point: getPoint("right")
+      right_point: getPoint("right"),
+      comment: graphCommentInput.value.trim()
     });
 
   if (error) {
     alert(error.message);
   } else {
     userLogStatus.textContent = "";
+    graphCommentInput.value = "";
     alert("Your log was saved.");
     loadAverageForClimb(selectedClimb);
     loadIndividualLogsForClimb(selectedClimb);
@@ -1254,7 +1367,7 @@ async function loadIndividualLogsForClimb(climb) {
 
   const { data, error } = await supabaseClient
     .from("climb_graphs")
-    .select("id, user_id, user_email, created_at, top, left_point, right_point")
+    .select("id, user_id, user_email, created_at, top, left_point, right_point, comment")
     .eq("climb_id", climb.id)
     .order("created_at", { ascending: false });
 
@@ -1280,14 +1393,15 @@ function renderIndividualLogs(logs) {
   const header = document.createElement("thead");
   const headerRow = document.createElement("tr");
 
-  [
-    "User",
-    "Date / Time",
-    "Exposure",
-    "Risk",
-    "Consequence",
-    "Graph"
-  ].forEach(label => {
+	  [
+	    "User",
+	    "Exposure",
+	    "Risk",
+	    "Consequence",
+	    "Comment",
+	    "Date / Time",
+	    "Graph"
+	  ].forEach(label => {
     const th = document.createElement("th");
     th.textContent = label;
     headerRow.appendChild(th);
@@ -1306,13 +1420,14 @@ function renderIndividualLogs(logs) {
       : "-";
     const values = getLogAxisValues(log);
 
-    [
-      user,
-      submittedAt,
-      values.exposure + "%",
-      values.risk + "%",
-      values.consequence + "%"
-    ].forEach(value => {
+	    [
+	      user,
+	      values.exposure + "%",
+	      values.risk + "%",
+	      values.consequence + "%",
+	      log.comment || "-",
+	      submittedAt
+	    ].forEach(value => {
       const td = document.createElement("td");
       td.textContent = value;
       row.appendChild(td);
