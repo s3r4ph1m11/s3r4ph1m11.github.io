@@ -361,6 +361,45 @@ input[type="range"]::-moz-range-thumb {
   white-space: nowrap;
 }
 
+.individual-logs {
+  max-width: 1320px;
+  margin-top: 18px;
+  font-family: sans-serif;
+}
+
+.individual-logs h2 {
+  margin-bottom: 10px;
+}
+
+.individual-logs table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.individual-logs th,
+.individual-logs td {
+  padding: 8px 10px;
+  border-bottom: 1px solid black;
+  text-align: left;
+  font-size: 15px;
+}
+
+.individual-logs th {
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.individual-logs button {
+  font-size: 14px;
+  padding: 5px 10px;
+  cursor: pointer;
+}
+
+.individual-logs-message {
+  font-size: 16px;
+}
+
 </style>
 
 <h1>Interactive Fear Matrix</h1>
@@ -501,7 +540,22 @@ input[type="range"]::-moz-range-thumb {
   pointer-events="none"
 />
 
+<path
+  id="individual-shape"
+  fill="rgba(80, 140, 255, 0.22)"
+  stroke="blue"
+  stroke-width="2"
+  pointer-events="none"
+/>
+
 </svg>
+  </div>
+</div>
+
+<div class="individual-logs">
+  <h2>Individual Logs</h2>
+  <div id="individual-logs-container" class="individual-logs-message">
+    Select a climb to see individual logs.
   </div>
 </div>
 
@@ -509,7 +563,7 @@ input[type="range"]::-moz-range-thumb {
   id="slider-controls"
   style="
     font-family:sans-serif;
-    width:760px;
+    width:1320px;
     margin-top:30px;
     margin-bottom:20px;
   "
@@ -667,8 +721,10 @@ const supabaseClient = supabase.createClient(
 const svg = document.getElementById("graph");
 const points = document.querySelectorAll(".hit-area");
 const averageShape = document.getElementById("average-shape");
+const individualShape = document.getElementById("individual-shape");
 const shape = document.getElementById("profile-shape");
 const userLogStatus = document.getElementById("user-log-status");
+const individualLogsContainer = document.getElementById("individual-logs-container");
 const climbNameInput = document.getElementById("climb-name");
 const addClimbButton = document.getElementById("add-climb");
 const saveClimbButton = document.getElementById("save-climb");
@@ -890,6 +946,8 @@ addClimbButton.addEventListener("click", async () => {
   updateLocationFilterOptions();
   userLogStatus.textContent =
     "(No recorded log for this climb)";
+  individualShape.removeAttribute("d");
+  loadIndividualLogsForClimb(climb);
   alert("Climb added. You can now save your log for it.");
   loadClimbsFromSupabase();
 });
@@ -914,6 +972,7 @@ saveClimbButton.addEventListener("click", async () => {
       climb_name: selectedClimb.name,
       climb_id: selectedClimb.id,
       user_id: userData.user.id,
+      user_email: userData.user.email,
       top: getPoint("top"),
       left_point: getPoint("left"),
       right_point: getPoint("right")
@@ -925,6 +984,7 @@ saveClimbButton.addEventListener("click", async () => {
     userLogStatus.textContent = "";
     alert("Your log was saved.");
     loadAverageForClimb(selectedClimb);
+    loadIndividualLogsForClimb(selectedClimb);
     loadClimbsFromSupabase();
   }
 });
@@ -962,6 +1022,7 @@ deleteLogButton.addEventListener("click", async () => {
 
   alert("Your log was deleted.");
   loadAverageForClimb(selectedClimb);
+  loadIndividualLogsForClimb(selectedClimb);
   updateUserLogStatus(selectedClimb);
 });
 
@@ -1067,8 +1128,10 @@ function renderClimbList() {
         "Climb name: " + climb.name;
       climbNameInput.value = climb.name;
       setDetailInputsForClimb(climb);
+      individualShape.removeAttribute("d");
       renderClimbList();
       loadAverageForClimb(climb);
+      loadIndividualLogsForClimb(climb);
       updateUserLogStatus(climb);
     });
 
@@ -1184,6 +1247,104 @@ async function loadAverageForClimb(climb) {
   );
 
   drawAverageShape(avgTop, avgLeft, avgRight);
+}
+
+async function loadIndividualLogsForClimb(climb) {
+  individualLogsContainer.textContent = "Loading individual logs...";
+
+  const { data, error } = await supabaseClient
+    .from("climb_graphs")
+    .select("id, user_id, user_email, created_at, top, left_point, right_point")
+    .eq("climb_id", climb.id)
+    .order("created_at", { ascending: false });
+
+  if (error) {
+    individualLogsContainer.textContent =
+      "Could not load individual logs: " + error.message;
+    return;
+  }
+
+  renderIndividualLogs(data || []);
+}
+
+function renderIndividualLogs(logs) {
+  individualLogsContainer.innerHTML = "";
+
+  if (logs.length === 0) {
+    individualLogsContainer.textContent =
+      "No individual logs recorded for this climb yet.";
+    return;
+  }
+
+  const table = document.createElement("table");
+  const header = document.createElement("thead");
+  const headerRow = document.createElement("tr");
+
+  [
+    "User",
+    "Date / Time",
+    "Exposure",
+    "Risk",
+    "Consequence",
+    "Graph"
+  ].forEach(label => {
+    const th = document.createElement("th");
+    th.textContent = label;
+    headerRow.appendChild(th);
+  });
+
+  header.appendChild(headerRow);
+  table.appendChild(header);
+
+  const body = document.createElement("tbody");
+
+  logs.forEach(log => {
+    const row = document.createElement("tr");
+    const user = log.user_email || log.user_id || "Unknown user";
+    const submittedAt = log.created_at
+      ? new Date(log.created_at).toLocaleString()
+      : "-";
+    const values = getLogAxisValues(log);
+
+    [
+      user,
+      submittedAt,
+      values.exposure + "%",
+      values.risk + "%",
+      values.consequence + "%"
+    ].forEach(value => {
+      const td = document.createElement("td");
+      td.textContent = value;
+      row.appendChild(td);
+    });
+
+    const actionCell = document.createElement("td");
+    const viewButton = document.createElement("button");
+    viewButton.textContent = "View Graph";
+    viewButton.addEventListener("click", event => {
+      event.stopPropagation();
+      drawIndividualShape(
+        log.top,
+        log.left_point,
+        log.right_point
+      );
+    });
+
+    actionCell.appendChild(viewButton);
+    row.appendChild(actionCell);
+    body.appendChild(row);
+  });
+
+  table.appendChild(body);
+  individualLogsContainer.appendChild(table);
+}
+
+function getLogAxisValues(log) {
+  return {
+    exposure: Math.round(getAxisRatio(log.top, axes.top) * 100),
+    risk: Math.round(getAxisRatio(log.left_point, axes.left) * 100),
+    consequence: Math.round(getAxisRatio(log.right_point, axes.right) * 100)
+  };
 }
 
 syncSlidersFromPoints();
@@ -1304,6 +1465,18 @@ function drawAverageShape(top, left, right) {
   `;
 
   averageShape.setAttribute("d", d);
+}
+
+function drawIndividualShape(top, left, right) {
+  const d = `
+    M ${top.x} ${top.y}
+    Q ${center.x} ${center.y} ${left.x} ${left.y}
+    Q ${center.x} ${center.y} ${right.x} ${right.y}
+    Q ${center.x} ${center.y} ${top.x} ${top.y}
+    Z
+  `;
+
+  individualShape.setAttribute("d", d);
 }
 
 function averagePoints(points) {
