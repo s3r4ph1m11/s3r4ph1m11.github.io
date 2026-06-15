@@ -651,6 +651,15 @@ input[type="range"]::-moz-range-thumb {
   </div>
 </div>
 
+<div class="graph-comment-wrap">
+  <label for="existing-graph-comment">Comment:</label>
+  <input
+    id="existing-graph-comment"
+    type="text"
+    placeholder="Optional comment"
+  />
+</div>
+
 <div
   id="slider-controls"
   style="
@@ -840,6 +849,7 @@ const addClimbButton = document.getElementById("add-climb");
 const saveClimbButton = document.getElementById("save-climb");
 const deleteLogButton = document.getElementById("delete-log");
 const graphCommentInput = document.getElementById("graph-comment");
+const existingGraphCommentInput = document.getElementById("existing-graph-comment");
 const savedClimbsContainer = document.getElementById("saved-climbs");
 const climbTypeSelect = document.getElementById("climb-type");
 const climbTypeFilter = document.getElementById("climb-type-filter");
@@ -1087,7 +1097,7 @@ saveClimbButton.addEventListener("click", async () => {
       top: getPoint("top"),
       left_point: getPoint("left"),
       right_point: getPoint("right"),
-      comment: graphCommentInput.value.trim()
+      comment: existingGraphCommentInput.value.trim() || graphCommentInput.value.trim()
     });
 
   if (error) {
@@ -1095,6 +1105,7 @@ saveClimbButton.addEventListener("click", async () => {
   } else {
     userLogStatus.textContent = "";
     graphCommentInput.value = "";
+    existingGraphCommentInput.value = "";
     alert("Your log was saved.");
     loadAverageForClimb(selectedClimb);
     loadIndividualLogsForClimb(selectedClimb);
