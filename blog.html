@@ -57,11 +57,24 @@
       transform: rotate(-0.35deg);
     }
 
+    .title-lockup {
+      align-items: center;
+      display: flex;
+      gap: 18px;
+    }
+
+    .title-rocks {
+      display: block;
+      height: 100px;
+      object-fit: contain;
+      width: auto;
+    }
+
     h1 {
-      font-size: 2rem;
+      font-size: 3.8rem;
       font-weight: 400;
       letter-spacing: 0;
-      line-height: 1.2;
+      line-height: 1;
       margin: 0;
     }
 
@@ -89,7 +102,7 @@
     }
 
     .post-card {
-      padding: 12px 0 28px;
+      padding: 28px 0 28px;
       position: relative;
     }
 
@@ -161,13 +174,24 @@
         flex-direction: column;
         gap: 16px;
       }
+
+      .title-rocks {
+        height: 74px;
+      }
+
+      h1 {
+        font-size: 3rem;
+      }
     }
   </style>
 </head>
 <body>
   <main class="page">
     <section class="title-section" data-home-section>
-      <h1>Blog</h1>
+      <div class="title-lockup">
+        <h1>Blog</h1>
+        <img class="title-rocks" src="assets/title-rocks.png" alt="Two rocks">
+      </div>
       <div class="search" aria-label="Search posts">
         <input id="search" type="search" placeholder="Search posts" autocomplete="off">
       </div>
