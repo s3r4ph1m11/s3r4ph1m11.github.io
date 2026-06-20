@@ -30,7 +30,7 @@
 
     .page {
       margin: 0;
-      max-width: 820px;
+      max-width: 900px;
       padding: 32px 40px 60px;
     }
 
@@ -44,7 +44,8 @@
       position: relative;
     }
 
-    .title-section::after {
+    .title-section::after,
+    .post-card::after {
       background-image: url("data:image/svg+xml,%3Csvg width='190' height='30' viewBox='0 0 190 30' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 18 C10 16 16 16 23 17 M37 18 C47 21 58 21 69 17 M91 17 C101 14 112 15 122 18 M140 18 C151 21 163 21 174 17 M184 17 C187 17 189 16 190 16' fill='none' stroke='%23d8d8d8' stroke-width='1.05' stroke-linecap='round'/%3E%3Cpath d='M23 13 l4 -3 l6 2 l2 5 l-3 4 l-6 1 l-5 -3 l-1 -4 z' fill='none' stroke='%23d8d8d8' stroke-width='1.15' stroke-linejoin='round'/%3E%3Cpath d='M27 14 c2 0 4 0 5 -1 M27 19 c2 -1 3 0 5 1' fill='none' stroke='%23d8d8d8' stroke-width='0.65' stroke-linecap='round'/%3E%3Cpath d='M69 9 l8 -4 l10 3 l4 8 l-5 7 l-11 1 l-8 -6 l-1 -6 z' fill='none' stroke='%23d8d8d8' stroke-width='1.3' stroke-linejoin='round'/%3E%3Cpath d='M76 10 c3 1 6 1 9 0 M75 18 c3 -1 6 0 8 3 M85 10 c-2 3 -2 7 0 10' fill='none' stroke='%23d8d8d8' stroke-width='0.75' stroke-linecap='round'/%3E%3Cpath d='M122 14 l5 -2 l5 2 l2 5 l-4 4 l-6 -1 l-4 -3 l-1 -3 z' fill='none' stroke='%23d8d8d8' stroke-width='1.1' stroke-linejoin='round'/%3E%3Cpath d='M126 15 c2 0 3 0 5 -1 M126 20 c2 -1 3 0 4 1' fill='none' stroke='%23d8d8d8' stroke-width='0.6' stroke-linecap='round'/%3E%3Cpath d='M144 19 l3 -2 l4 1 l1 3 l-2 3 l-4 0 l-3 -2 z' fill='none' stroke='%23d8d8d8' stroke-width='1' stroke-linejoin='round'/%3E%3Cpath d='M151 10 l6 -3 l8 3 l3 6 l-4 6 l-9 0 l-6 -5 l-1 -4 z' fill='none' stroke='%23d8d8d8' stroke-width='1.2' stroke-linejoin='round'/%3E%3Cpath d='M156 11 c3 1 5 0 7 -1 M155 18 c3 -1 5 0 7 2 M164 11 c-2 3 -1 6 1 9' fill='none' stroke='%23d8d8d8' stroke-width='0.68' stroke-linecap='round'/%3E%3Cpath d='M38 20 l2 -1 l3 1 l1 2 l-2 2 l-3 0 l-2 -2 z M94 16 l2 -1 l3 1 l1 2 l-2 2 l-3 0 l-2 -2 z M177 17 l2 -1 l3 1 l1 2 l-2 2 l-3 0 l-2 -2 z' fill='none' stroke='%23d8d8d8' stroke-width='0.9' stroke-linejoin='round'/%3E%3C/svg%3E");
       background-repeat: repeat-x;
       background-size: 190px 30px;
@@ -54,6 +55,9 @@
       left: 0;
       position: absolute;
       right: 0;
+    }
+
+    .title-section::after {
       transform: rotate(-0.35deg);
     }
 
@@ -107,15 +111,6 @@
     }
 
     .post-card::after {
-      background-image: url("data:image/svg+xml,%3Csvg width='190' height='30' viewBox='0 0 190 30' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 18 C10 16 16 16 23 17 M37 18 C47 21 58 21 69 17 M91 17 C101 14 112 15 122 18 M140 18 C151 21 163 21 174 17 M184 17 C187 17 189 16 190 16' fill='none' stroke='%23d8d8d8' stroke-width='1.05' stroke-linecap='round'/%3E%3Cpath d='M23 13 l4 -3 l6 2 l2 5 l-3 4 l-6 1 l-5 -3 l-1 -4 z' fill='none' stroke='%23d8d8d8' stroke-width='1.15' stroke-linejoin='round'/%3E%3Cpath d='M27 14 c2 0 4 0 5 -1 M27 19 c2 -1 3 0 5 1' fill='none' stroke='%23d8d8d8' stroke-width='0.65' stroke-linecap='round'/%3E%3Cpath d='M69 9 l8 -4 l10 3 l4 8 l-5 7 l-11 1 l-8 -6 l-1 -6 z' fill='none' stroke='%23d8d8d8' stroke-width='1.3' stroke-linejoin='round'/%3E%3Cpath d='M76 10 c3 1 6 1 9 0 M75 18 c3 -1 6 0 8 3 M85 10 c-2 3 -2 7 0 10' fill='none' stroke='%23d8d8d8' stroke-width='0.75' stroke-linecap='round'/%3E%3Cpath d='M122 14 l5 -2 l5 2 l2 5 l-4 4 l-6 -1 l-4 -3 l-1 -3 z' fill='none' stroke='%23d8d8d8' stroke-width='1.1' stroke-linejoin='round'/%3E%3Cpath d='M126 15 c2 0 3 0 5 -1 M126 20 c2 -1 3 0 4 1' fill='none' stroke='%23d8d8d8' stroke-width='0.6' stroke-linecap='round'/%3E%3Cpath d='M144 19 l3 -2 l4 1 l1 3 l-2 3 l-4 0 l-3 -2 z' fill='none' stroke='%23d8d8d8' stroke-width='1' stroke-linejoin='round'/%3E%3Cpath d='M151 10 l6 -3 l8 3 l3 6 l-4 6 l-9 0 l-6 -5 l-1 -4 z' fill='none' stroke='%23d8d8d8' stroke-width='1.2' stroke-linejoin='round'/%3E%3Cpath d='M156 11 c3 1 5 0 7 -1 M155 18 c3 -1 5 0 7 2 M164 11 c-2 3 -1 6 1 9' fill='none' stroke='%23d8d8d8' stroke-width='0.68' stroke-linecap='round'/%3E%3Cpath d='M38 20 l2 -1 l3 1 l1 2 l-2 2 l-3 0 l-2 -2 z M94 16 l2 -1 l3 1 l1 2 l-2 2 l-3 0 l-2 -2 z M177 17 l2 -1 l3 1 l1 2 l-2 2 l-3 0 l-2 -2 z' fill='none' stroke='%23d8d8d8' stroke-width='0.9' stroke-linejoin='round'/%3E%3C/svg%3E");
-      background-repeat: repeat-x;
-      background-size: 190px 30px;
-      bottom: -14px;
-      content: "";
-      height: 30px;
-      left: 0;
-      position: absolute;
-      right: 0;
       transform: rotate(0.2deg);
     }
 
@@ -148,6 +143,38 @@
       color: var(--ink);
       font-size: 1.15rem;
       line-height: 1.65;
+    }
+
+    .post-image {
+      margin: 26px 0;
+    }
+
+    .post-image img {
+      display: block;
+      height: auto;
+      margin: 0 auto;
+      max-width: 100%;
+    }
+
+    .post-image.is-small img {
+      max-width: 420px;
+      width: 100%;
+    }
+
+    .post-image.is-medium img {
+      max-width: 620px;
+      width: 100%;
+    }
+
+    .post-image.is-full img {
+      width: 100%;
+    }
+
+    .post-image figcaption {
+      color: var(--muted);
+      font-size: 0.9rem;
+      line-height: 1.4;
+      margin-top: 8px;
     }
 
     .empty-state {
@@ -190,7 +217,7 @@
     <section class="title-section" data-home-section>
       <div class="title-lockup">
         <h1>Blog</h1>
-        <img class="title-rocks" src="title-rocks.png" alt="Two rocks">
+        <img class="title-rocks" src="data:image/svg+xml,%3Csvg width='160' height='110' viewBox='0 0 160 110' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M24 69c3-17 17-29 39-35 23-6 46-3 64 7 12 7 18 16 16 28-2 13-17 23-42 29-26 6-53 4-70-6-7-4-10-12-7-23z' fill='%23f4f1ec' stroke='%23161616' stroke-width='2.2'/%3E%3Cpath d='M39 70c7-10 19-17 36-21 19-5 38-3 54 6' fill='none' stroke='%238f877d' stroke-width='1.8' stroke-linecap='round'/%3E%3Cpath d='M55 83c14 5 33 5 56 0' fill='none' stroke='%238f877d' stroke-width='1.5' stroke-linecap='round'/%3E%3Cpath d='M38 50c-4-13 2-24 17-32 16-8 35-8 47 1 10 7 12 17 6 30' fill='%23fffdf9' stroke='%23161616' stroke-width='2.2'/%3E%3Cpath d='M51 31c12-7 27-8 42-2' fill='none' stroke='%238f877d' stroke-width='1.5' stroke-linecap='round'/%3E%3Cpath d='M61 44c8 2 18 2 31-2' fill='none' stroke='%238f877d' stroke-width='1.5' stroke-linecap='round'/%3E%3C/svg%3E" alt="Two rocks">
       </div>
       <div class="search" aria-label="Search posts">
         <input id="search" type="search" placeholder="Search posts" autocomplete="off">
@@ -206,46 +233,36 @@
   <script>
     const posts = [
       {
-        id: "test-post",
+        id: "guardian-angels",
         title: "My Guardian Angels",
         date: "Friday, June 19 2026",
-        excerpt: "A simple test post to confirm new entries show up on the page.",
+        excerpt: "A meditation on signs, dreams, ravens, painted ladies, and wanting to believe.",
         body: [
-          "
-          Though it echoes many of the themes explored in the Dark Wizard, I wrote htis piece before it came out, earlier this spring in the Valley.
-          
-          'Do you believe in guardian angels?
-          
-          If so, how do you know when they are with you, watching?
-          
-          I think I was 11 years old when I was at my dad's funeral. Everyone was handed a small paper envelope. I didn't know what was inside. Butterflies can be frozen and put to sleep. The palms of our hands warmed them up and woke them up inside the envelopes.
-          
-          Everyone was instructed to open their envelopes at the same time. A painted lady butterfly was in each one, creating a small flurry of them.
-          
-          Now every time I see a painted lady butterfly, I think of my dad. I have a tattoo on my thigh of a hand releasing a painted lady butterfly. My hand.
-          
-          Last summer, I was on a ledge with Xavier. A dragonfly hovered around our heads for a few seconds and he said "Hi mom."
-          
-          I knew immediately what he meant.
-          
-          For the Greek, ravens were considered messengers from the afterlife to our world. While scrambling in Bishop, it feels like there are always one or two hanging around to watch out for you.
-      
-      Cardinals are the bird most commonly associated with the presence of a dead relative. My grandmother used to feed cardinals birdseed in her back yard. When she died, I got a tattoo of a cardinal next to the painted lady.
-      
-      The other day in Bishop, it was very hot out and there were painted ladies everywhere. Then, in the evening, it became very cold, and I found this &uarr; painted lady in the door sill of my van, wings shuddering and barely alive. I tried to save it; I fed it some honey and warmed it up in the palm of my hand. It died overnight. That night, I had a dream that every time I tried to open my mouth to speak, painted lady butterflies filled my mouth until I had to spit them out and they would fly away.
-      
-      I've been having lots of vivid dreams lately. The night before I did Transporter Room I dreamt that DFale Bard came to give me an old pair of his shoes from th after life.
-      
-      I'm not religious though, and I don't believe in ghosts.
-        
-        But I think we all, to some extent, have this wish that there is something, or someone beyond this plane of existence that is watching us in solitary times.
-        
-        I love looking around while alone on a climb, only to make direct eye contact with the keen stare of a raven. It brings solace, and often some bemusement.
-        
-    And do I believe that painted ladies are literally my dad? No... But also, yes. I like it, and so I want to.
-        
-    Do I believe that dreams are meaningful, a message being sent to you from the universe? No... But sometimes, mine are. When they make sense or show me something I was missing, what else should I do with them?'
-        Outro"
+          "Though it echoes many of the themes explored in the Dark Wizard, I wrote htis piece before it came out, earlier this spring in the Valley.",
+          "'Do you believe in guardian angels?",
+          "If so, how do you know when they are with you, watching?",
+          "I think I was 11 years old when I was at my dad's funeral. Everyone was handed a small paper envelope. I didn't know what was inside. Butterflies can be frozen and put to sleep. The palms of our hands warmed them up and woke them up inside the envelopes.",
+          "Everyone was instructed to open their envelopes at the same time. A painted lady butterfly was in each one, creating a small flurry of them.",
+          "Now every time I see a painted lady butterfly, I think of my dad. I have a tattoo on my thigh of a hand releasing a painted lady butterfly. My hand.",
+          "Last summer, I was on a ledge with Xavier. A dragonfly hovered around our heads for a few seconds and he said \"Hi mom.\"",
+          "I knew immediately what he meant.",
+          "For the Greek, ravens were considered messengers from the afterlife to our world. While scrambling in Bishop, it feels like there are always one or two hanging around to watch out for you.",
+          "Cardinals are the bird most commonly associated with the presence of a dead relative. My grandmother used to feed cardinals birdseed in her back yard. When she died, I got a tattoo of a cardinal next to the painted lady.",
+          "The other day in Bishop, it was very hot out and there were painted ladies everywhere. Then, in the evening, it became very cold, and I found this ↑ painted lady in the door sill of my van, wings shuddering and barely alive. I tried to save it; I fed it some honey and warmed it up in the palm of my hand. It died overnight. That night, I had a dream that every time I tried to open my mouth to speak, painted lady butterflies filled my mouth until I had to spit them out and they would fly away.",
+          {
+            type: "image",
+            src: "placeholder-butterfly.svg",
+            alt: "A simple placeholder drawing of a butterfly beside a stone and feather",
+            caption: "Example image placeholder. Replace this file name with your own photo when you are ready.",
+            size: "medium"
+          },
+          "I've been having lots of vivid dreams lately. The night before I did Transporter Room I dreamt that DFale Bard came to give me an old pair of his shoes from th after life.",
+          "I'm not religious though, and I don't believe in ghosts.",
+          "But I think we all, to some extent, have this wish that there is something, or someone beyond this plane of existence that is watching us in solitary times.",
+          "I love looking around while alone on a climb, only to make direct eye contact with the keen stare of a raven. It brings solace, and often some bemusement.",
+          "And do I believe that painted ladies are literally my dad? No... But also, yes. I like it, and so I want to.",
+          "Do I believe that dreams are meaningful, a message being sent to you from the universe? No... But sometimes, mine are. When they make sense or show me something I was missing, what else should I do with them?'",
+          "Outro"
         ]
       },
       {
@@ -287,13 +304,41 @@
     const searchInput = document.querySelector("#search");
     const emptyState = document.querySelector("#emptyState");
 
+    function escapeHtml(value) {
+      return value.replace(/[&<>"']/g, character => ({
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        '"': "&quot;",
+        "'": "&#039;"
+      }[character]));
+    }
+
+    function postContent(item) {
+      if (typeof item === "string") {
+        return `<p>${escapeHtml(item)}</p>`;
+      }
+
+      if (item.type === "image") {
+        const sizeClass = ["small", "medium", "full"].includes(item.size) ? ` is-${item.size}` : "";
+        return `
+          <figure class="post-image${sizeClass}">
+            <img src="${escapeHtml(item.src)}" alt="${escapeHtml(item.alt || "")}">
+            ${item.caption ? `<figcaption>${escapeHtml(item.caption)}</figcaption>` : ""}
+          </figure>
+        `;
+      }
+
+      return "";
+    }
+
     function postCard(post) {
       return `
         <article class="post-card">
-          <p class="post-date">${post.date}</p>
-          <h2>${post.title}</h2>
+          <p class="post-date">${escapeHtml(post.date)}</p>
+          <h2>${escapeHtml(post.title)}</h2>
           <div class="post-body">
-            ${post.body.map(paragraph => `<p>${paragraph}</p>`).join("")}
+            ${post.body.map(postContent).join("")}
           </div>
         </article>
       `;
@@ -307,7 +352,8 @@
     function filterPosts() {
       const query = searchInput.value.trim().toLowerCase();
       const filtered = posts.filter(post => {
-        const searchable = `${post.title} ${post.date} ${post.excerpt} ${post.body.join(" ")}`.toLowerCase();
+        const bodyText = post.body.map(item => typeof item === "string" ? item : `${item.alt || ""} ${item.caption || ""}`).join(" ");
+        const searchable = `${post.title} ${post.date} ${post.excerpt} ${bodyText}`.toLowerCase();
         return searchable.includes(query);
       });
       renderPosts(filtered);
