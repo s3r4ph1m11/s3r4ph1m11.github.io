@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -184,6 +185,10 @@
       max-width: 620px;
     }
 
+    .post-image-row.is-full {
+      max-width: 100%;
+    }
+
     .post-image-row img {
       display: block;
       height: auto;
@@ -269,6 +274,7 @@
           "Though it echoes many of the themes explored in the Dark Wizard, I wrote this piece before it came out, earlier this spring in the Valley.",
           {
             type: "image-row",
+            size: "full",
             images: [
               {
                 src: "IMG_9370.jpg",
@@ -368,8 +374,9 @@
       }
 
       if (item.type === "image-row") {
+        const sizeClass = item.size === "full" ? " is-full" : "";
         return `
-          <div class="post-image-row">
+          <div class="post-image-row${sizeClass}">
             ${item.images.map(image => `
               <figure>
                 <img src="${escapeHtml(image.src)}" alt="${escapeHtml(image.alt || "")}">
