@@ -30,7 +30,7 @@
 
     .page {
       margin: 0;
-      max-width: 1000px;
+      max-width: 900px;
       padding: 32px 40px 60px;
     }
 
@@ -152,17 +152,16 @@
     .post-image img {
       display: block;
       height: auto;
-      margin: 0 auto;
       max-width: 100%;
     }
 
     .post-image.is-small img {
-      max-width: 420px;
+      max-width: 220px;
       width: 100%;
     }
 
     .post-image.is-medium img {
-      max-width: 620px;
+      max-width: 420px;
       width: 100%;
     }
 
@@ -171,6 +170,31 @@
     }
 
     .post-image figcaption {
+      color: var(--muted);
+      font-size: 0.9rem;
+      line-height: 1.4;
+      margin-top: 8px;
+    }
+
+    .post-image-row {
+      display: grid;
+      gap: 14px;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      margin: 26px 0;
+      max-width: 620px;
+    }
+
+    .post-image-row img {
+      display: block;
+      height: auto;
+      width: 100%;
+    }
+
+    .post-image-row figure {
+      margin: 0;
+    }
+
+    .post-image-row figcaption {
       color: var(--muted);
       font-size: 0.9rem;
       line-height: 1.4;
@@ -209,6 +233,10 @@
       h1 {
         font-size: 3rem;
       }
+
+      .post-image-row {
+        grid-template-columns: 1fr;
+      }
     }
   </style>
 </head>
@@ -217,7 +245,7 @@
     <section class="title-section" data-home-section>
       <div class="title-lockup">
         <h1>Blog</h1>
-        <img class="title-rocks" src="title-rocks.png" alt="Two rocks">
+        <img class="title-rocks" src="data:image/svg+xml,%3Csvg width='160' height='110' viewBox='0 0 160 110' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M24 69c3-17 17-29 39-35 23-6 46-3 64 7 12 7 18 16 16 28-2 13-17 23-42 29-26 6-53 4-70-6-7-4-10-12-7-23z' fill='%23f4f1ec' stroke='%23161616' stroke-width='2.2'/%3E%3Cpath d='M39 70c7-10 19-17 36-21 19-5 38-3 54 6' fill='none' stroke='%238f877d' stroke-width='1.8' stroke-linecap='round'/%3E%3Cpath d='M55 83c14 5 33 5 56 0' fill='none' stroke='%238f877d' stroke-width='1.5' stroke-linecap='round'/%3E%3Cpath d='M38 50c-4-13 2-24 17-32 16-8 35-8 47 1 10 7 12 17 6 30' fill='%23fffdf9' stroke='%23161616' stroke-width='2.2'/%3E%3Cpath d='M51 31c12-7 27-8 42-2' fill='none' stroke='%238f877d' stroke-width='1.5' stroke-linecap='round'/%3E%3Cpath d='M61 44c8 2 18 2 31-2' fill='none' stroke='%238f877d' stroke-width='1.5' stroke-linecap='round'/%3E%3C/svg%3E" alt="Two rocks">
       </div>
       <div class="search" aria-label="Search posts">
         <input id="search" type="search" placeholder="Search posts" autocomplete="off">
@@ -249,14 +277,28 @@
           "For the Greek, ravens were considered messengers from the afterlife to our world. While scrambling in Bishop, it feels like there are always one or two hanging around to watch out for you.",
           "Cardinals are the bird most commonly associated with the presence of a dead relative. My grandmother used to feed cardinals birdseed in her back yard. When she died, I got a tattoo of a cardinal next to the painted lady.",
           "The other day in Bishop, it was very hot out and there were painted ladies everywhere. Then, in the evening, it became very cold, and I found this ↑ painted lady in the door sill of my van, wings shuddering and barely alive. I tried to save it; I fed it some honey and warmed it up in the palm of my hand. It died overnight. That night, I had a dream that every time I tried to open my mouth to speak, painted lady butterflies filled my mouth until I had to spit them out and they would fly away.",
-         <img src="IMG_8125_Original.jpg" alt="A butterfly landed on a finger." style="height: 20px; vertical-align: left;">
+          {
+            type: "image-row",
+            images: [
+              {
+                src: "IMG_8125_Original.jpg",
+                alt: "A butterfly landed on a finger.",
+                caption: "A painted lady butterfly."
+              },
+              {
+                src: "placeholder-butterfly.svg",
+                alt: "A simple placeholder drawing of a butterfly beside a stone and feather.",
+                caption: "Second image example. Replace this filename with another photo."
+              }
+            ]
+          },
           "I've been having lots of vivid dreams lately. The night before I did Transporter Room I dreamt that Dale Bard came to give me an old pair of his shoes from the after life.",
           "I'm not religious though, and I don't believe in ghosts.",
           "But I think we all, to some extent, have this wish that there is something, or someone beyond this plane of existence that is watching us in solitary times.",
           "I love looking around while alone on a climb, only to make direct eye contact with the keen stare of a raven. It brings solace, and often some bemusement.",
           "And do I believe that painted ladies are literally my dad? No... But also, yes. I like it, and so I want to.",
           "Do I believe that dreams are meaningful, a message being sent to you from the universe? No... But sometimes, mine are. When they make sense or show me something I was missing, what else should I do with them?'",
-          
+          "Outro"
         ]
       },
       {
@@ -323,6 +365,19 @@
         `;
       }
 
+      if (item.type === "image-row") {
+        return `
+          <div class="post-image-row">
+            ${item.images.map(image => `
+              <figure>
+                <img src="${escapeHtml(image.src)}" alt="${escapeHtml(image.alt || "")}">
+                ${image.caption ? `<figcaption>${escapeHtml(image.caption)}</figcaption>` : ""}
+              </figure>
+            `).join("")}
+          </div>
+        `;
+      }
+
       return "";
     }
 
@@ -346,7 +401,13 @@
     function filterPosts() {
       const query = searchInput.value.trim().toLowerCase();
       const filtered = posts.filter(post => {
-        const bodyText = post.body.map(item => typeof item === "string" ? item : `${item.alt || ""} ${item.caption || ""}`).join(" ");
+        const bodyText = post.body.map(item => {
+          if (typeof item === "string") return item;
+          if (item.type === "image-row") {
+            return item.images.map(image => `${image.alt || ""} ${image.caption || ""}`).join(" ");
+          }
+          return `${item.alt || ""} ${item.caption || ""}`;
+        }).join(" ");
         const searchable = `${post.title} ${post.date} ${post.excerpt} ${bodyText}`.toLowerCase();
         return searchable.includes(query);
       });
