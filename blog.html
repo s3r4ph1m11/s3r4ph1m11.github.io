@@ -1,4 +1,5 @@
 
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -156,17 +157,26 @@
       max-width: 100%;
     }
 
-    .post-image.is-small img {
+    .post-image video {
+      display: block;
+      height: auto;
+      max-width: 100%;
+    }
+
+    .post-image.is-small img,
+    .post-image.is-small video {
       max-width: 220px;
       width: 100%;
     }
 
-    .post-image.is-medium img {
+    .post-image.is-medium img,
+    .post-image.is-medium video {
       max-width: 420px;
       width: 100%;
     }
 
-    .post-image.is-full img {
+    .post-image.is-full img,
+    .post-image.is-full video {
       width: 100%;
     }
 
@@ -303,6 +313,11 @@
           "Last summer, I was on a ledge with Xavier. A dragonfly hovered around our heads for a few seconds and he said \"Hi mom.\"",
           "I knew immediately what he meant.",
           "For the Greek, ravens were considered messengers from the afterlife to our world. While scrambling in Bishop, it feels like there are always one or two hanging around to watch out for you.",
+              {
+            type: "video",
+            src: "PLACEHOLDER-VIDEO-FILENAME.mp4",
+            caption: "Video of a raven flying."
+          },          
           "Cardinals are the bird most commonly associated with the presence of a dead relative. My grandmother used to feed cardinals birdseed in her back yard. When she died, I got a tattoo of a cardinal next to the painted lady.",
           "The other day in Bishop, it was very hot out and there were painted ladies everywhere. Then, in the evening, it became very cold, and I found this ↑ painted lady in the door sill of my van, wings shuddering and barely alive. I tried to save it; I fed it some honey and warmed it up in the palm of my hand. It died overnight. That night, I had a dream that every time I tried to open my mouth to speak, painted lady butterflies filled my mouth until I had to spit them out and they would fly away.",
           {
@@ -381,6 +396,18 @@
         return `
           <figure class="post-image${sizeClass}">
             <img src="${escapeHtml(item.src)}" alt="${escapeHtml(item.alt || "")}">
+            ${item.caption ? `<figcaption>${escapeHtml(item.caption)}</figcaption>` : ""}
+          </figure>
+        `;
+      }
+
+      if (item.type === "video") {
+        const sizeClass = ["small", "medium", "full"].includes(item.size) ? ` is-${item.size}` : "";
+        return `
+          <figure class="post-image${sizeClass}">
+            <video controls playsinline>
+              <source src="${escapeHtml(item.src)}" type="video/mp4">
+            </video>
             ${item.caption ? `<figcaption>${escapeHtml(item.caption)}</figcaption>` : ""}
           </figure>
         `;
