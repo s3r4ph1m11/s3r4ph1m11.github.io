@@ -189,6 +189,10 @@
       max-width: 100%;
     }
 
+    .post-image-row.is-three {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
     .post-image-row img {
       display: block;
       height: auto;
@@ -240,6 +244,10 @@
       }
 
       .post-image-row {
+        grid-template-columns: 1fr;
+      }
+
+      .post-image-row.is-three {
         grid-template-columns: 1fr;
       }
     }
@@ -299,6 +307,7 @@
           "The other day in Bishop, it was very hot out and there were painted ladies everywhere. Then, in the evening, it became very cold, and I found this ↑ painted lady in the door sill of my van, wings shuddering and barely alive. I tried to save it; I fed it some honey and warmed it up in the palm of my hand. It died overnight. That night, I had a dream that every time I tried to open my mouth to speak, painted lady butterflies filled my mouth until I had to spit them out and they would fly away.",
           {
             type: "image-row",
+            size: "full",
             images: [
               {
                 src: "IMG_8125_Original.jpg",
@@ -307,6 +316,10 @@
               {
                 src: "IMG_8130_Original.jpg",
                 alt: "A painted lady butterfly."
+              },
+              {
+                src: "IMG_8120_Original.jpg",
+                alt: "A painted lady butterfly in a palm."
               }
             ]
           },
@@ -375,8 +388,9 @@
 
       if (item.type === "image-row") {
         const sizeClass = item.size === "full" ? " is-full" : "";
+        const countClass = item.images.length === 3 ? " is-three" : "";
         return `
-          <div class="post-image-row${sizeClass}">
+          <div class="post-image-row${sizeClass}${countClass}">
             ${item.images.map(image => `
               <figure>
                 <img src="${escapeHtml(image.src)}" alt="${escapeHtml(image.alt || "")}">
