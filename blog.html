@@ -292,10 +292,10 @@
         excerpt: "A meditation on signs, dreams, ravens, painted ladies, and wanting to believe.",
         body: [
           "This winter I had the good fortune of once again spending the season roaming California, waking up in my van in the Buttermilks, Joshua Tree, or the Camp 4 parking lot in Yosemite. (Don't tell the rangers.)",
-          "During that time, I was having intensely vivid dreams almost every night. Several of them lingered long after I woke. They shared the same strange atmosphere. One where the boundary between memory and presence, coincidence and meaning, life and after-life, felt less certain than it did in daylight. The dreams emphasized questions that have quietly existed in human consciousness forever; why do certain places, dreams, or animals  feel so laden with meaning? Is meaning something we discover, or something we create?The piece I wrote below grew out of those dreams.",
-          "A few months later <em>The Dark Wizard</em> was released, a series about the life and death of the iconoclastic Dean Potter. Throughout the series, Dean's connection with ravens is a recurring thread, culminating in a final scene that suggests his spirit returns to visit his loved ones in the form of a raven.",
-          "Watching it felt  familiar. So many of its images and ideas echoed dreams I'd written about months earlier while living in Yosemite Valley. That was why I decided it would be a shame to let this piece continue collecting dust between the covers of my journal.",
-          {
+          "During that time, I was having intensely vivid dreams almost every night. Several of them lingered long after I woke. They shared the same strange atmosphere. One where the boundary between memory and presence, coincidence and meaning, life and after-life, felt less certain than it did in daylight. The dreams emphasized questions that have quietly existed in human consciousness forever; why do certain places, dreams, or animals feel so laden with meaning? Is meaning something we discover, or something we create? The piece below grew out of those dreams.",
+          "A few months later <em>The Dark Wizard</em> was released, a series about the life and death of the iconoclastic Dean Potter. Throughout the series, Dean's connection with ravens is a recurring thread, culminating in a final scene that suggests his spirit returns to visit his loved ones in the form of a raven.",
+          "Watching it felt strangely familiar. So many of its images and ideas echoed dreams I'd written about months earlier while living in Yosemite Valley. That was when I realized it would be a shame to let this piece continue collecting dust between the covers of my journal.",
+          { 
             type: "image-row",
             size: "full",
             images: [
@@ -392,51 +392,50 @@
       }[character]));
     }
 
-    function postContent(item) {
-      if (typeof item === "string") {
-        return `<p>${escapeHtml(item)}</p>`;
-      }
+function postContent(item) {
+  if (typeof item === "string") {
+    return `<p>${item}</p>`;
+  }
 
-      if (item.type === "image") {
-        const sizeClass = ["small", "medium", "full"].includes(item.size) ? ` is-${item.size}` : "";
-        return `
-          <figure class="post-image${sizeClass}">
-            <img src="${escapeHtml(item.src)}" alt="${escapeHtml(item.alt || "")}">
-            ${item.caption ? `<figcaption>${escapeHtml(item.caption)}</figcaption>` : ""}
+  if (item.type === "image") {
+    const sizeClass = ["small", "medium", "full"].includes(item.size) ? ` is-${item.size}` : "";
+    return `
+      <figure class="post-image${sizeClass}">
+        <img src="${escapeHtml(item.src)}" alt="${escapeHtml(item.alt || "")}">
+        ${item.caption ? `<figcaption>${escapeHtml(item.caption)}</figcaption>` : ""}
+      </figure>
+    `;
+  }
+
+  if (item.type === "video") {
+    const sizeClass = ["small", "medium", "full"].includes(item.size) ? ` is-${item.size}` : "";
+    return `
+      <figure class="post-image${sizeClass}">
+        <video controls playsinline>
+          <source src="${escapeHtml(item.src)}" type="video/mp4">
+        </video>
+        ${item.caption ? `<figcaption>${escapeHtml(item.caption)}</figcaption>` : ""}
+      </figure>
+    `;
+  }
+
+  if (item.type === "image-row") {
+    const sizeClass = item.size === "full" ? " is-full" : "";
+    const countClass = item.images.length === 3 ? " is-three" : "";
+    return `
+      <div class="post-image-row${sizeClass}${countClass}">
+        ${item.images.map(image => `
+          <figure>
+            <img src="${escapeHtml(image.src)}" alt="${escapeHtml(image.alt || "")}">
+            ${image.caption ? `<figcaption>${escapeHtml(image.caption)}</figcaption>` : ""}
           </figure>
-        `;
-      }
+        `).join("")}
+      </div>
+    `;
+  }
 
-      if (item.type === "video") {
-        const sizeClass = ["small", "medium", "full"].includes(item.size) ? ` is-${item.size}` : "";
-        return `
-          <figure class="post-image${sizeClass}">
-            <video controls playsinline>
-              <source src="${escapeHtml(item.src)}" type="video/mp4">
-            </video>
-            ${item.caption ? `<figcaption>${escapeHtml(item.caption)}</figcaption>` : ""}
-          </figure>
-        `;
-      }
-
-      if (item.type === "image-row") {
-        const sizeClass = item.size === "full" ? " is-full" : "";
-        const countClass = item.images.length === 3 ? " is-three" : "";
-        return `
-          <div class="post-image-row${sizeClass}${countClass}">
-            ${item.images.map(image => `
-              <figure>
-                <img src="${escapeHtml(image.src)}" alt="${escapeHtml(image.alt || "")}">
-                ${image.caption ? `<figcaption>${escapeHtml(image.caption)}</figcaption>` : ""}
-              </figure>
-            `).join("")}
-          </div>
-        `;
-      }
-
-      return "";
-    }
-
+  return "";
+}
     function postCard(post) {
       return `
         <article class="post-card">
