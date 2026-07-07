@@ -409,15 +409,6 @@
           },            
           "Dale was a lifer. He was the best of us.",
           "After the speeches, the crowd mingled while enjoying food from the taco truck, paid for by Doug. One by one, the stone masters approached me to thank me for my tribute to their friend.", 
-             {
-            type: "image-row",
-            images: [
-              {
-                src: "lhm.jpg",
-                caption: "Lynn Hill and I at the memorial."
-              }
-            ]
-          },  
           "A while into the afternoon, Lynn approached me; “I have a job for you Sarah.” In my head, I was thinking ‘Yes Lynn Hill? Anything for you.’ She explained that they had a little of Dale’s ashes with them, and wanted to spread them off the top of one of the boulders he had climbed. “I would do it,” she said, “but I’ve had a few drinks already. Are you sober?” She asked. “I am,” I replied.",
           {
             type: "image-row",
@@ -463,7 +454,7 @@
             type: "image-row",
             images: [
               {
-                src: "lha.JPG",
+                src: "lha.jpg",
                 caption: "Lynn sussing the holds on Lucid Dreaming."
               }
             ]
@@ -646,7 +637,7 @@ function postContent(item) {
     const sizeClass = ["small", "medium", "full"].includes(item.size) ? ` is-${item.size}` : "";
     return `
       <figure class="post-image${sizeClass}">
-        <img src="${escapeHtml(item.src)}" alt="${escapeHtml(item.alt || "")}">
+        <img src="${escapeHtml(item.src)}" alt="${escapeHtml(item.alt || "")}" loading="lazy">
         ${item.caption ? `<figcaption>${escapeHtml(item.caption)}</figcaption>` : ""}
       </figure>
     `;
@@ -671,7 +662,7 @@ function postContent(item) {
       <div class="post-image-row${sizeClass}${countClass}">
         ${item.images.map(image => `
           <figure>
-            <img src="${escapeHtml(image.src)}" alt="${escapeHtml(image.alt || "")}">
+            <img src="${escapeHtml(image.src)}" alt="${escapeHtml(image.alt || "")}" loading="lazy">
             ${image.caption ? `<figcaption>${escapeHtml(image.caption)}</figcaption>` : ""}
           </figure>
         `).join("")}
