@@ -197,41 +197,37 @@
       margin-top: 8px;
     }
 
-    .post-image-row {
-      display: grid;
-      gap: 14px;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      margin: 26px auto;
-      max-width: 620px;
-    }
+ .post-image-row {
+  display: grid;
+  gap: 14px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  margin: 26px auto;
+  max-width: 620px;
+}
 
-    .post-image-row.is-full {
-      max-width: 100%;
-    }
-
-    .post-image-row.is-three {
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-    }
-
-   .post-image-row img {
-  display: block;
-  height: auto;
+.post-image-row.is-full {
   max-width: 100%;
 }
 
-.post-image-row:not(:has(figure:only-child)) {
-  align-items: start;
+.post-image-row.is-three {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
 }
 
-.post-image-row:not(:has(figure:only-child)) figure {
-  text-align: center;
+.post-image-row figure {
+  margin: 0;
 }
 
-.post-image-row:not(:has(figure:only-child)) img {
-  max-height: 520px;
-  width: auto;
-  margin-left: auto;
-  margin-right: auto;
+.post-image-row img {
+  display: block;
+  height: auto;
+  width: 100%;
+}
+
+.post-image-row figcaption {
+  color: var(--muted);
+  font-size: 0.9rem;
+  line-height: 1.4;
+  margin-top: 8px;
 }
 
 .post-image-row:has(figure:only-child) {
@@ -240,14 +236,9 @@
 }
 
 .post-image-row:has(figure:only-child) figure {
-  max-width: 520px;
+  max-width: 420px;
   width: 100%;
 }
-
-.post-image-row:has(figure:only-child) img {
-  width: 100%;
-}
-
     .empty-state {
       color: var(--muted);
       display: none;
