@@ -213,24 +213,28 @@
       grid-template-columns: repeat(3, minmax(0, 1fr));
     }
 
-    .post-image-row img {
-      display: block;
-      height: auto;
-      width: 100%;
-    }
+   .post-image-row img {
+  display: block;
+  height: auto;
+  max-width: 100%;
+}
 
-    .post-image-row figure {
-      margin: 0;
-    }
+.post-image-row:not(:has(figure:only-child)) {
+  align-items: start;
+}
 
-    .post-image-row figcaption {
-      color: var(--muted);
-      font-size: 0.9rem;
-      line-height: 1.4;
-      margin-top: 8px;
-    }
+.post-image-row:not(:has(figure:only-child)) figure {
+  text-align: center;
+}
 
-    .post-image-row:has(figure:only-child) {
+.post-image-row:not(:has(figure:only-child)) img {
+  max-height: 520px;
+  width: auto;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.post-image-row:has(figure:only-child) {
   grid-template-columns: minmax(0, 1fr);
   justify-items: center;
 }
@@ -239,14 +243,9 @@
   max-width: 520px;
   width: 100%;
 }
-.post-image-row:not(:has(figure:only-child)) img {
-  aspect-ratio: 4 / 3;
-  object-fit: cover;
-}
 
 .post-image-row:has(figure:only-child) img {
-  height: auto;
-  object-fit: contain;
+  width: 100%;
 }
 
     .empty-state {
