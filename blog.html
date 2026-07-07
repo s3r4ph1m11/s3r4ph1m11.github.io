@@ -230,6 +230,16 @@
       margin-top: 8px;
     }
 
+    .post-image-row:has(figure:only-child) {
+  grid-template-columns: minmax(0, 1fr);
+  justify-items: center;
+}
+
+.post-image-row:has(figure:only-child) figure {
+  max-width: 420px;
+  width: 100%;
+}
+
     .empty-state {
       color: var(--muted);
       display: none;
