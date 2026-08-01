@@ -950,10 +950,24 @@ signInButton.addEventListener("click", async () => {
     return;
   }
 
+  if (turnstileToken === "") {
+    alert("Please complete the CAPTCHA.");
+    return;
+  }
+
   const { error } = await supabaseClient.auth.signInWithPassword({
     email,
-    password
+    password,
+    options: {
+      captchaToken: turnstileToken
+    }
   });
+
+  if (window.turnstile) {
+    turnstile.reset();
+  }
+
+  turnstileToken = "";
 
   if (error) {
     alert(error.message);
@@ -961,7 +975,7 @@ signInButton.addEventListener("click", async () => {
     alert("Signed in.");
   }
 });
-
+	
 points.forEach(point => {
   const axisName = point.dataset.axis;
 
