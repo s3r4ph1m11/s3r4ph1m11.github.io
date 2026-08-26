@@ -160,6 +160,7 @@
     }
 
     .post-image img {
+      cursor: zoom-in;
       display: block;
       height: auto;
       max-width: 100%;
@@ -218,8 +219,11 @@
 }
 
 .post-image-row img {
+  cursor: zoom-in;
   display: block;
   height: auto;
+  max-height: 520px;
+  object-fit: contain;
   width: 100%;
 }
 
@@ -236,7 +240,7 @@
 }
 
 .post-image-row:has(figure:only-child) figure {
-  max-width: 420px;
+  max-width: 520px;
   width: 100%;
 }
     .empty-state {
@@ -247,6 +251,109 @@
 
     .empty-state.is-visible {
       display: block;
+    }
+
+    .pagination {
+      align-items: center;
+      display: none;
+      gap: 14px;
+      justify-content: space-between;
+      padding: 26px 0 0;
+    }
+
+    .pagination.is-visible {
+      display: flex;
+    }
+
+    .page-button {
+      background: transparent;
+      border: 1px solid var(--line);
+      color: var(--ink);
+      cursor: pointer;
+      font: inherit;
+      min-width: 92px;
+      padding: 7px 10px;
+    }
+
+    .page-button:disabled {
+      color: var(--muted);
+      cursor: default;
+      opacity: 0.45;
+    }
+
+    .page-button:not(:disabled):focus,
+    .page-button:not(:disabled):hover {
+      border-color: var(--ink);
+    }
+
+    .page-status {
+      color: var(--muted);
+      font-size: 0.9rem;
+      text-align: center;
+    }
+
+    .continued-label {
+      color: var(--muted);
+      font-size: 0.9rem;
+      font-style: italic;
+    }
+
+    .lightbox {
+      align-items: center;
+      background: rgba(255, 255, 255, 0.94);
+      bottom: 0;
+      display: none;
+      justify-content: center;
+      left: 0;
+      padding: 28px;
+      position: fixed;
+      right: 0;
+      top: 0;
+      z-index: 10;
+    }
+
+    .lightbox.is-visible {
+      display: flex;
+    }
+
+    .lightbox-content {
+      max-height: 100%;
+      max-width: min(1100px, 100%);
+      position: relative;
+    }
+
+    .lightbox img {
+      display: block;
+      height: auto;
+      max-height: calc(100vh - 120px);
+      max-width: 100%;
+      width: auto;
+    }
+
+    .lightbox-caption {
+      color: var(--muted);
+      font-size: 0.95rem;
+      line-height: 1.4;
+      margin: 10px 44px 0 0;
+    }
+
+    .lightbox-close {
+      background: #ffffff;
+      border: 1px solid var(--line);
+      color: var(--ink);
+      cursor: pointer;
+      font: inherit;
+      line-height: 1;
+      padding: 8px 11px;
+      position: absolute;
+      right: 0;
+      top: 0;
+      transform: translateY(calc(-100% - 10px));
+    }
+
+    .lightbox-close:focus,
+    .lightbox-close:hover {
+      border-color: var(--ink);
     }
 
     @media (max-width: 560px) {
@@ -279,6 +386,15 @@
       .post-image-row.is-three {
         grid-template-columns: 1fr;
       }
+
+      .pagination {
+        align-items: stretch;
+        flex-direction: column;
+      }
+
+      .page-button {
+        width: 100%;
+      }
     }
   </style>
 </head>
@@ -297,8 +413,20 @@
     <section data-home-section>
       <div class="post-list" id="postList" aria-live="polite"></div>
       <div class="empty-state" id="emptyState">No posts match that search.</div>
+      <nav class="pagination" id="pagination" aria-label="Blog pages">
+        <button class="page-button" id="previousPage" type="button">Previous</button>
+        <span class="page-status" id="pageStatus"></span>
+        <button class="page-button" id="nextPage" type="button">Next</button>
+      </nav>
     </section>
   </main>
+  <div class="lightbox" id="lightbox" aria-modal="true" role="dialog" aria-label="Expanded photo">
+    <div class="lightbox-content">
+      <button class="lightbox-close" id="lightboxClose" type="button" aria-label="Close expanded photo">Close</button>
+      <img id="lightboxImage" src="" alt="">
+      <div class="lightbox-caption" id="lightboxCaption"></div>
+    </div>
+  </div>
 
   <script>
     const posts = [
@@ -612,6 +740,18 @@
     const postList = document.querySelector("#postList");
     const searchInput = document.querySelector("#search");
     const emptyState = document.querySelector("#emptyState");
+    const pagination = document.querySelector("#pagination");
+    const previousPage = document.querySelector("#previousPage");
+    const nextPage = document.querySelector("#nextPage");
+    const pageStatus = document.querySelector("#pageStatus");
+    const lightbox = document.querySelector("#lightbox");
+    const lightboxImage = document.querySelector("#lightboxImage");
+    const lightboxCaption = document.querySelector("#lightboxCaption");
+    const lightboxClose = document.querySelector("#lightboxClose");
+    const maxPageWeight = 24000;
+    let currentPage = 1;
+    let filteredPosts = posts;
+    let paginatedPosts = [];
 
     function escapeHtml(value) {
       return value.replace(/[&<>"']/g, character => ({
@@ -623,70 +763,168 @@
       }[character]));
     }
 
-function postContent(item) {
-  if (typeof item === "string") {
-    return `<p>${item}</p>`;
-  }
+    function mediaClass(src = "") {
+      return /journal page|drawing/i.test(src) ? " is-artifact" : "";
+    }
 
-  if (item.type === "image") {
-    const sizeClass = ["small", "medium", "full"].includes(item.size) ? ` is-${item.size}` : "";
-    return `
-      <figure class="post-image${sizeClass}">
-        <img src="${escapeHtml(item.src)}" alt="${escapeHtml(item.alt || "")}" loading="lazy">
-        ${item.caption ? `<figcaption>${escapeHtml(item.caption)}</figcaption>` : ""}
-      </figure>
-    `;
-  }
+    function postContent(item) {
+      if (typeof item === "string") {
+        return `<p>${item}</p>`;
+      }
 
-  if (item.type === "video") {
-    const sizeClass = ["small", "medium", "full"].includes(item.size) ? ` is-${item.size}` : "";
-    return `
-      <figure class="post-image${sizeClass}">
-        <video controls playsinline>
-          <source src="${escapeHtml(item.src)}" type="video/mp4">
-        </video>
-        ${item.caption ? `<figcaption>${escapeHtml(item.caption)}</figcaption>` : ""}
-      </figure>
-    `;
-  }
-
-  if (item.type === "image-row") {
-    const sizeClass = item.size === "full" ? " is-full" : "";
-    const countClass = item.images.length === 3 ? " is-three" : "";
-    return `
-      <div class="post-image-row${sizeClass}${countClass}">
-        ${item.images.map(image => `
-          <figure>
-            <img src="${escapeHtml(image.src)}" alt="${escapeHtml(image.alt || "")}" loading="lazy">
-            ${image.caption ? `<figcaption>${escapeHtml(image.caption)}</figcaption>` : ""}
+      if (item.type === "image") {
+        const sizeClass = ["small", "medium", "full"].includes(item.size) ? ` is-${item.size}` : "";
+        const treatmentClass = mediaClass(item.src);
+        return `
+          <figure class="post-image${sizeClass}${treatmentClass}">
+            <img src="${escapeHtml(item.src)}" alt="${escapeHtml(item.alt || "")}" loading="lazy" tabindex="0">
+            ${item.caption ? `<figcaption>${escapeHtml(item.caption)}</figcaption>` : ""}
           </figure>
-        `).join("")}
-      </div>
-    `;
-  }
+        `;
+      }
 
-  return "";
-}
-    function postCard(post) {
+      if (item.type === "video") {
+        const sizeClass = ["small", "medium", "full"].includes(item.size) ? ` is-${item.size}` : "";
+        return `
+          <figure class="post-image${sizeClass}">
+            <video controls playsinline preload="metadata">
+              <source src="${escapeHtml(item.src)}" type="video/mp4">
+            </video>
+            ${item.caption ? `<figcaption>${escapeHtml(item.caption)}</figcaption>` : ""}
+          </figure>
+        `;
+      }
+
+      if (item.type === "image-row") {
+        const sizeClass = item.size === "full" ? " is-full" : "";
+        const countClass = item.images.length === 3 ? " is-three" : "";
+        return `
+          <div class="post-image-row${sizeClass}${countClass}">
+            ${item.images.map(image => `
+              <figure class="${mediaClass(image.src).trim()}">
+                <img src="${escapeHtml(image.src)}" alt="${escapeHtml(image.alt || "")}" loading="lazy" tabindex="0">
+                ${image.caption ? `<figcaption>${escapeHtml(image.caption)}</figcaption>` : ""}
+              </figure>
+            `).join("")}
+          </div>
+        `;
+      }
+
+      return "";
+    }
+
+    function contentWeight(item) {
+      if (typeof item === "string") {
+        return Math.max(350, item.replace(/<[^>]*>/g, "").length);
+      }
+
+      if (item.type === "video") {
+        return 1800;
+      }
+
+      if (item.type === "image") {
+        return item.size === "full" ? 1500 : 1100;
+      }
+
+      if (item.type === "image-row") {
+        const imageCount = item.images.length;
+        const base = item.size === "full" ? 1250 : 900;
+        return base + imageCount * 350;
+      }
+
+      return 400;
+    }
+
+    function buildPages(items) {
+      const pages = [];
+      let page = [];
+      let pageWeight = 0;
+
+      items.forEach(post => {
+        post.body.forEach((item, itemIndex) => {
+          const startsArticle = !page.some(article => article.post === post);
+          const headerWeight = startsArticle ? 550 : 0;
+          const itemWeight = headerWeight + contentWeight(item);
+
+          if (pageWeight > 0 && pageWeight + itemWeight > maxPageWeight) {
+            pages.push(page);
+            page = [];
+            pageWeight = 0;
+          }
+
+          let article = page.find(entry => entry.post === post);
+          if (!article) {
+            article = {
+              post,
+              continued: itemIndex > 0,
+              body: []
+            };
+            page.push(article);
+            pageWeight += headerWeight;
+          }
+
+          article.body.push(item);
+          pageWeight += contentWeight(item);
+        });
+      });
+
+      if (page.length > 0) {
+        pages.push(page);
+      }
+
+      return pages;
+    }
+
+    function postCard(article) {
+      const post = article.post;
       return `
         <article class="post-card">
           <p class="post-date">${escapeHtml(post.date)}</p>
-          <h2>${escapeHtml(post.title)}</h2>
+          <h2>
+            ${escapeHtml(post.title)}
+            ${article.continued ? '<span class="continued-label">(continued)</span>' : ""}
+          </h2>
           <div class="post-body">
-            ${post.body.map(postContent).join("")}
+            ${article.body.map(postContent).join("")}
           </div>
         </article>
       `;
     }
 
     function renderPosts(items) {
-      postList.innerHTML = items.map(postCard).join("");
+      paginatedPosts = buildPages(items);
+      const pageCount = Math.max(1, paginatedPosts.length);
+      currentPage = Math.min(currentPage, pageCount);
+      const pageItems = paginatedPosts[currentPage - 1] || [];
+
+      postList.innerHTML = pageItems.map(postCard).join("");
       emptyState.classList.toggle("is-visible", items.length === 0);
+      pagination.classList.toggle("is-visible", paginatedPosts.length > 1);
+      previousPage.disabled = currentPage === 1;
+      nextPage.disabled = currentPage === pageCount;
+      pageStatus.textContent = `Page ${currentPage} of ${pageCount}`;
+    }
+
+    function openLightbox(image) {
+      const caption = image.closest("figure")?.querySelector("figcaption")?.textContent || image.alt || "";
+      lightboxImage.src = image.src;
+      lightboxImage.alt = image.alt || caption || "Expanded photo";
+      lightboxCaption.textContent = caption;
+      lightbox.classList.add("is-visible");
+      document.body.style.overflow = "hidden";
+      lightboxClose.focus();
+    }
+
+    function closeLightbox() {
+      lightbox.classList.remove("is-visible");
+      document.body.style.overflow = "";
+      lightboxImage.src = "";
+      lightboxCaption.textContent = "";
     }
 
     function filterPosts() {
       const query = searchInput.value.trim().toLowerCase();
-      const filtered = posts.filter(post => {
+      filteredPosts = posts.filter(post => {
         const bodyText = post.body.map(item => {
           if (typeof item === "string") return item;
           if (item.type === "image-row") {
@@ -694,15 +932,51 @@ function postContent(item) {
           }
           return `${item.alt || ""} ${item.caption || ""}`;
         }).join(" ");
-        const searchable = `${post.title} ${post.date} ${post.excerpt} ${bodyText}`.toLowerCase();
+        const searchable = `${post.title} ${post.date} ${post.excerpt || ""} ${bodyText}`.toLowerCase();
         return searchable.includes(query);
       });
-      renderPosts(filtered);
+      currentPage = 1;
+      renderPosts(filteredPosts);
     }
 
     searchInput.addEventListener("input", filterPosts);
+    postList.addEventListener("click", event => {
+      if (event.target.matches("img")) {
+        openLightbox(event.target);
+      }
+    });
+    postList.addEventListener("keydown", event => {
+      if (event.target.matches("img") && (event.key === "Enter" || event.key === " ")) {
+        event.preventDefault();
+        openLightbox(event.target);
+      }
+    });
+    lightbox.addEventListener("click", event => {
+      if (event.target === lightbox) {
+        closeLightbox();
+      }
+    });
+    lightboxClose.addEventListener("click", closeLightbox);
+    document.addEventListener("keydown", event => {
+      if (event.key === "Escape" && lightbox.classList.contains("is-visible")) {
+        closeLightbox();
+      }
+    });
+    previousPage.addEventListener("click", () => {
+      if (currentPage <= 1) return;
+      currentPage -= 1;
+      renderPosts(filteredPosts);
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    });
+    nextPage.addEventListener("click", () => {
+      const pageCount = paginatedPosts.length;
+      if (currentPage >= pageCount) return;
+      currentPage += 1;
+      renderPosts(filteredPosts);
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    });
 
-    renderPosts(posts);
+    renderPosts(filteredPosts);
   </script>
 </body>
 </html>
