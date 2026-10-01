@@ -115,6 +115,80 @@
       display: grid;
     }
 
+    .post-list.is-index {
+      padding-top: 18px;
+    }
+
+    .post-preview {
+      color: inherit;
+      display: grid;
+      gap: 22px;
+      grid-template-columns: minmax(0, 1fr) minmax(180px, 28%);
+      padding: 28px 0;
+      position: relative;
+      text-decoration: none;
+    }
+
+    .post-preview::after {
+      background-image: url("data:image/svg+xml,%3Csvg width='190' height='30' viewBox='0 0 190 30' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 18 C10 16 16 16 23 17 M37 18 C47 21 58 21 69 17 M91 17 C101 14 112 15 122 18 M140 18 C151 21 163 21 174 17 M184 17 C187 17 189 16 190 16' fill='none' stroke='%23d8d8d8' stroke-width='1.05' stroke-linecap='round'/%3E%3Cpath d='M23 13 l4 -3 l6 2 l2 5 l-3 4 l-6 1 l-5 -3 l-1 -4 z' fill='none' stroke='%23d8d8d8' stroke-width='1.15' stroke-linejoin='round'/%3E%3Cpath d='M27 14 c2 0 4 0 5 -1 M27 19 c2 -1 3 0 5 1' fill='none' stroke='%23d8d8d8' stroke-width='0.65' stroke-linecap='round'/%3E%3Cpath d='M69 9 l8 -4 l10 3 l4 8 l-5 7 l-11 1 l-8 -6 l-1 -6 z' fill='none' stroke='%23d8d8d8' stroke-width='1.3' stroke-linejoin='round'/%3E%3Cpath d='M76 10 c3 1 6 1 9 0 M75 18 c3 -1 6 0 8 3 M85 10 c-2 3 -2 7 0 10' fill='none' stroke='%23d8d8d8' stroke-width='0.75' stroke-linecap='round'/%3E%3Cpath d='M122 14 l5 -2 l5 2 l2 5 l-4 4 l-6 -1 l-4 -3 l-1 -3 z' fill='none' stroke='%23d8d8d8' stroke-width='1.1' stroke-linejoin='round'/%3E%3Cpath d='M126 15 c2 0 3 0 5 -1 M126 20 c2 -1 3 0 4 1' fill='none' stroke='%23d8d8d8' stroke-width='0.6' stroke-linecap='round'/%3E%3Cpath d='M144 19 l3 -2 l4 1 l1 3 l-2 3 l-4 0 l-3 -2 z' fill='none' stroke='%23d8d8d8' stroke-width='1' stroke-linejoin='round'/%3E%3Cpath d='M151 10 l6 -3 l8 3 l3 6 l-4 6 l-9 0 l-6 -5 l-1 -4 z' fill='none' stroke='%23d8d8d8' stroke-width='1.2' stroke-linejoin='round'/%3E%3Cpath d='M156 11 c3 1 5 0 7 -1 M155 18 c3 -1 5 0 7 2 M164 11 c-2 3 -1 6 1 9' fill='none' stroke='%23d8d8d8' stroke-width='0.68' stroke-linecap='round'/%3E%3Cpath d='M38 20 l2 -1 l3 1 l1 2 l-2 2 l-3 0 l-2 -2 z M94 16 l2 -1 l3 1 l1 2 l-2 2 l-3 0 l-2 -2 z M177 17 l2 -1 l3 1 l1 2 l-2 2 l-3 0 l-2 -2 z' fill='none' stroke='%23d8d8d8' stroke-width='0.9' stroke-linejoin='round'/%3E%3C/svg%3E");
+      background-repeat: repeat-x;
+      background-size: 190px 30px;
+      bottom: -14px;
+      content: "";
+      height: 30px;
+      left: 0;
+      position: absolute;
+      right: 0;
+      transform: rotate(0.2deg);
+    }
+
+    .post-preview:focus,
+    .post-preview:hover {
+      outline: none;
+    }
+
+    .post-preview:focus h2,
+    .post-preview:hover h2 {
+      text-decoration: underline;
+    }
+
+    .post-preview-images {
+      align-content: start;
+    }
+
+    .post-preview-image {
+      background: #f7f7f7;
+    }
+
+    .post-preview-image img {
+      display: block;
+      height: auto;
+      max-height: 220px;
+      object-fit: contain;
+      width: 100%;
+    }
+
+    .post-preview-body {
+      align-self: start;
+    }
+
+    .post-preview h2 {
+      font-size: 1.8rem;
+    }
+
+    .post-preview p {
+      color: var(--muted);
+      font-size: 1.08rem;
+      line-height: 1.58;
+      margin: 12px 0 0;
+    }
+
+    .post-preview-meta {
+      color: var(--muted);
+      font-size: 0.84rem;
+      margin-bottom: 10px;
+    }
+
     .post-card {
       padding: 28px 0 28px;
       position: relative;
@@ -298,6 +372,21 @@
       font-style: italic;
     }
 
+    .article-nav {
+      margin: 28px 0 0;
+    }
+
+    .back-link {
+      color: var(--muted);
+      text-decoration: none;
+    }
+
+    .back-link:focus,
+    .back-link:hover {
+      color: var(--ink);
+      text-decoration: underline;
+    }
+
     .lightbox {
       align-items: center;
       background: rgba(255, 255, 255, 0.94);
@@ -385,6 +474,14 @@
 
       .post-image-row.is-three {
         grid-template-columns: 1fr;
+      }
+
+      .post-preview {
+        grid-template-columns: 1fr;
+      }
+
+      .post-preview-images {
+        order: -1;
       }
 
       .pagination {
@@ -875,34 +972,102 @@
       return pages;
     }
 
-    function postCard(article) {
-      const post = article.post;
+    function itemPlainText(item) {
+      if (typeof item === "string") {
+        return item.replace(/<[^>]*>/g, "");
+      }
+
+      if (item.type === "image-row") {
+        return item.images.map(image => `${image.alt || ""} ${image.caption || ""}`).join(" ");
+      }
+
+      return `${item.alt || ""} ${item.caption || ""}`;
+    }
+
+    function postPlainText(post) {
+      return post.body.map(itemPlainText).join(" ");
+    }
+
+    function postExcerpt(post) {
+      const text = postPlainText(post).replace(/\s+/g, " ").trim();
+      return text.length > 420 ? `${text.slice(0, 420).trim()}...` : text;
+    }
+
+    function postFeaturedImage(post) {
+      for (const item of post.body) {
+        if (item.type === "image" && item.src) {
+          return item;
+        }
+
+        if (item.type === "image-row" && item.images.length > 0) {
+          return item.images[0];
+        }
+      }
+
+      return { src: "title-rocks.png", alt: post.title };
+    }
+
+    function postPreview(post) {
+      const image = postFeaturedImage(post);
       return `
-        <article class="post-card">
-          <p class="post-date">${escapeHtml(post.date)}</p>
-          <h2>
-            ${escapeHtml(post.title)}
-            ${article.continued ? '<span class="continued-label">(continued)</span>' : ""}
-          </h2>
-          <div class="post-body">
-            ${article.body.map(postContent).join("")}
+        <a class="post-preview" href="#${encodeURIComponent(post.id)}">
+          <div class="post-preview-body">
+            <div class="post-preview-meta">${escapeHtml(post.date)}</div>
+            <h2>${escapeHtml(post.title)}</h2>
+            <p>${escapeHtml(postExcerpt(post))}</p>
           </div>
-        </article>
+          <div class="post-preview-images" aria-hidden="true">
+            <div class="post-preview-image">
+              <img src="${escapeHtml(image.src)}" alt="" loading="lazy">
+            </div>
+          </div>
+        </a>
       `;
     }
 
-    function renderPosts(items) {
-      paginatedPosts = buildPages(items);
-      const pageCount = Math.max(1, paginatedPosts.length);
-      currentPage = Math.min(currentPage, pageCount);
-      const pageItems = paginatedPosts[currentPage - 1] || [];
+    function articleCard(post) {
+      return `
+        <article class="post-card">
+          <p class="post-date">${escapeHtml(post.date)}</p>
+          <h2>${escapeHtml(post.title)}</h2>
+          <div class="post-body">
+            ${post.body.map(postContent).join("")}
+          </div>
+        </article>
+        <nav class="article-nav" aria-label="Article navigation">
+          <a class="back-link" href="#">Back to all posts</a>
+        </nav>
+      `;
+    }
 
-      postList.innerHTML = pageItems.map(postCard).join("");
+    function renderIndex(items = filteredPosts) {
+      postList.classList.add("is-index");
+      postList.innerHTML = items.map(postPreview).join("");
       emptyState.classList.toggle("is-visible", items.length === 0);
-      pagination.classList.toggle("is-visible", paginatedPosts.length > 1);
-      previousPage.disabled = currentPage === 1;
-      nextPage.disabled = currentPage === pageCount;
-      pageStatus.textContent = `Page ${currentPage} of ${pageCount}`;
+      pagination.classList.remove("is-visible");
+      pageStatus.textContent = "";
+    }
+
+    function renderArticle(post) {
+      postList.classList.remove("is-index");
+      postList.innerHTML = articleCard(post);
+      emptyState.classList.remove("is-visible");
+      pagination.classList.remove("is-visible");
+      pageStatus.textContent = "";
+    }
+
+    function renderRoute() {
+      const postId = decodeURIComponent(window.location.hash.replace(/^#/, ""));
+      const post = posts.find(item => item.id === postId);
+
+      if (post) {
+        renderArticle(post);
+        window.scrollTo({ top: 0 });
+        return;
+      }
+
+      renderIndex(filteredPosts);
+      window.scrollTo({ top: 0 });
     }
 
     function openLightbox(image) {
@@ -925,23 +1090,21 @@
     function filterPosts() {
       const query = searchInput.value.trim().toLowerCase();
       filteredPosts = posts.filter(post => {
-        const bodyText = post.body.map(item => {
-          if (typeof item === "string") return item;
-          if (item.type === "image-row") {
-            return item.images.map(image => `${image.alt || ""} ${image.caption || ""}`).join(" ");
-          }
-          return `${item.alt || ""} ${item.caption || ""}`;
-        }).join(" ");
+        const bodyText = postPlainText(post);
         const searchable = `${post.title} ${post.date} ${post.excerpt || ""} ${bodyText}`.toLowerCase();
         return searchable.includes(query);
       });
-      currentPage = 1;
-      renderPosts(filteredPosts);
+
+      if (window.location.hash) {
+        history.replaceState(null, "", window.location.pathname + window.location.search);
+      }
+
+      renderIndex(filteredPosts);
     }
 
     searchInput.addEventListener("input", filterPosts);
     postList.addEventListener("click", event => {
-      if (event.target.matches("img")) {
+      if (event.target.matches("img") && !event.target.closest(".post-preview")) {
         openLightbox(event.target);
       }
     });
@@ -962,21 +1125,9 @@
         closeLightbox();
       }
     });
-    previousPage.addEventListener("click", () => {
-      if (currentPage <= 1) return;
-      currentPage -= 1;
-      renderPosts(filteredPosts);
-      window.scrollTo({ top: 0, behavior: "smooth" });
-    });
-    nextPage.addEventListener("click", () => {
-      const pageCount = paginatedPosts.length;
-      if (currentPage >= pageCount) return;
-      currentPage += 1;
-      renderPosts(filteredPosts);
-      window.scrollTo({ top: 0, behavior: "smooth" });
-    });
+    window.addEventListener("hashchange", renderRoute);
 
-    renderPosts(filteredPosts);
+    renderRoute();
   </script>
 </body>
 </html>
